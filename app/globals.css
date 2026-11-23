@@ -319,6 +319,19 @@
     font-size: 0.95em;
   }
 
+  /* Code panel line numbers: generated, not copied, not announced */
+  .code-lines .code-line::before {
+    counter-increment: line;
+    content: counter(line);
+    content: counter(line) / "";
+    display: inline-block;
+    width: 3ch;
+    margin-right: 2ch;
+    text-align: right;
+    color: var(--c-text-muted);
+    user-select: none;
+  }
+
   .sr-only {
     position: absolute !important;
     width: 1px; height: 1px;
