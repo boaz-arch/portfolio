@@ -49,14 +49,37 @@ export type CaseStudy = {
   outcome: { metric: string; before: string; after: string; method: string }[];
 };
 
+/** The six levels of the Systems stack, top to bottom (BRIEF.md: Descend the stack). */
+export type StackLevel = "internet" | "edge" | "network" | "host" | "containers" | "os";
+export const stackLevels: { id: StackLevel; label: string }[] = [
+  { id: "internet", label: "Internet" },
+  { id: "edge", label: "Edge" },
+  { id: "network", label: "Network" },
+  { id: "host", label: "Host" },
+  { id: "containers", label: "Containers" },
+  { id: "os", label: "OS" },
+];
+
+/** What each /work lens shows for a project. A missing lens shows "Not part of this project". */
+export type ProjectLenses = {
+  design?: { alt: string; image?: string };
+  code?: { title: string; code: string } | { stack: string[] };
+  systems?: FlowDiagram;
+  security?: { threat: string; protection: string };
+};
+
 export type Project = {
   slug: string;
   title: string;
   summary: string;
+  outcome: string;
   tags: Discipline[];
   role: string;
   year: string;
   screenshotAlt: string;
+  lenses: ProjectLenses;
+  stackLevels: StackLevel[];
+  primaryLevel?: StackLevel;
   caseStudy?: CaseStudy;
 };
 
@@ -135,10 +158,43 @@ export const site = {
       slug: "placeholder-project-one",
       title: "Placeholder: Project one",
       summary: "Placeholder: one line on what this product does and who it is for.",
+      outcome: "Placeholder: one-line outcome with a number.",
       tags: ["design", "development", "security"],
       role: "Placeholder: Lead designer and engineer",
       year: "2026",
       screenshotAlt: "Placeholder: describe what the screenshot shows",
+      stackLevels: ["edge", "containers"],
+      primaryLevel: "containers",
+      lenses: {
+        design: { alt: "Placeholder: main screen of Project one, describe what it shows" },
+        code: {
+          title: "Placeholder: middleware/rate-limit.ts",
+          code: `export function rateLimit(key: string, limit = 20, windowMs = 60_000) {
+  const now = Date.now();
+  const hits = (store.get(key) ?? []).filter((t) => now - t < windowMs);
+  if (hits.length >= limit) return { allowed: false };
+  store.set(key, [...hits, now]);
+  return { allowed: true };
+}`,
+        },
+        systems: {
+          id: "lens-p1",
+          title: "Placeholder: Project one, mini architecture",
+          summary: "Placeholder: browser to CDN to app server to database.",
+          description: "Placeholder: browser to CDN to app server to database.",
+          nodes: [
+            { id: "b", label: "Browser" },
+            { id: "c", label: "CDN", security: true },
+            { id: "a", label: "App" },
+            { id: "d", label: "Database" },
+          ],
+          edges: [{ label: "HTTPS" }, { label: "Forward" }, { label: "Query" }],
+        },
+        security: {
+          threat: "Placeholder: credential stuffing against user accounts.",
+          protection: "Placeholder: rate limiting plus breached-password checks.",
+        },
+      },
       caseStudy: {
         lead: "Placeholder: one or two sentences on the outcome this project delivered.",
         meta: [
@@ -170,12 +226,7 @@ export const site = {
             "Placeholder: how the system is put together, in two or three sentences.",
             "Placeholder: the most interesting engineering problem and how you solved it.",
           ],
-          stack: [
-            "Placeholder: Framework",
-            "Placeholder: Database",
-            "Placeholder: Hosting",
-            "Placeholder: CI/CD",
-          ],
+          stack: ["Placeholder: Framework", "Placeholder: Database", "Placeholder: Hosting", "Placeholder: CI/CD"],
           code: [
             {
               title: "Placeholder: middleware/rate-limit.ts",
@@ -204,12 +255,7 @@ export function rateLimit(key: string, limit = 20, windowMs = 60_000) {
             { id: "auth", label: "Auth check", detail: "Placeholder", security: true },
             { id: "db", label: "Database", detail: "Placeholder" },
           ],
-          edges: [
-            { label: "HTTPS" },
-            { label: "Forward" },
-            { label: "Session" },
-            { label: "Query" },
-          ],
+          edges: [{ label: "HTTPS" }, { label: "Forward" }, { label: "Session" }, { label: "Query" }],
           response: "Response",
           group: { label: "Placeholder: Private network", from: 2, to: 4 },
         },
@@ -247,24 +293,9 @@ export function rateLimit(key: string, limit = 20, windowMs = 60_000) {
           note: "Placeholder: one security finding worth calling out, and how it was resolved.",
         },
         outcome: [
-          {
-            metric: "Placeholder: Task completion time",
-            before: "[Placeholder: metric]",
-            after: "[Placeholder: metric]",
-            method: "Placeholder: how it was measured",
-          },
-          {
-            metric: "Placeholder: Lighthouse performance",
-            before: "[Placeholder: metric]",
-            after: "[Placeholder: metric]",
-            method: "Placeholder: how it was measured",
-          },
-          {
-            metric: "Placeholder: Critical vulnerabilities",
-            before: "[Placeholder: metric]",
-            after: "[Placeholder: metric]",
-            method: "Placeholder: how it was measured",
-          },
+          { metric: "Placeholder: Task completion time", before: "[Placeholder: metric]", after: "[Placeholder: metric]", method: "Placeholder: how it was measured" },
+          { metric: "Placeholder: Lighthouse performance", before: "[Placeholder: metric]", after: "[Placeholder: metric]", method: "Placeholder: how it was measured" },
+          { metric: "Placeholder: Critical vulnerabilities", before: "[Placeholder: metric]", after: "[Placeholder: metric]", method: "Placeholder: how it was measured" },
         ],
       },
     },
@@ -272,37 +303,91 @@ export function rateLimit(key: string, limit = 20, windowMs = 60_000) {
       slug: "placeholder-project-two",
       title: "Placeholder: Project two",
       summary: "Placeholder: one line on a design-led project.",
+      outcome: "Placeholder: one-line outcome with a number.",
       tags: ["design"],
       role: "Placeholder: Product designer",
       year: "2025",
       screenshotAlt: "Placeholder: describe what the screenshot shows",
+      stackLevels: [],
+      lenses: {
+        design: { alt: "Placeholder: wireframe of Project two's main flow, describe it" },
+      },
     },
     {
       slug: "placeholder-project-three",
       title: "Placeholder: Project three",
       summary: "Placeholder: one line on a full-stack build.",
+      outcome: "Placeholder: one-line outcome with a number.",
       tags: ["development", "systems"],
       role: "Placeholder: Full-stack developer",
       year: "2025",
       screenshotAlt: "Placeholder: describe what the screenshot shows",
+      stackLevels: ["host", "containers", "os"],
+      primaryLevel: "os",
+      lenses: {
+        code: { stack: ["Placeholder: TypeScript", "Placeholder: Node.js", "Placeholder: PostgreSQL", "Placeholder: Docker"] },
+        systems: {
+          id: "lens-p3",
+          title: "Placeholder: Project three, mini architecture",
+          summary: "Placeholder: reverse proxy to API container to database.",
+          description: "Placeholder: reverse proxy to API container to database.",
+          nodes: [
+            { id: "p", label: "Proxy", security: true },
+            { id: "a", label: "API" },
+            { id: "d", label: "Database" },
+          ],
+          edges: [{ label: "TLS" }, { label: "Query" }],
+        },
+      },
     },
     {
       slug: "placeholder-project-four",
       title: "Placeholder: Project four",
       summary: "Placeholder: one line on an infrastructure project.",
+      outcome: "Placeholder: one-line outcome with a number.",
       tags: ["systems", "security"],
       role: "Placeholder: Infrastructure engineer",
       year: "2024",
       screenshotAlt: "Placeholder: describe what the screenshot shows",
+      stackLevels: ["internet", "network", "host"],
+      primaryLevel: "network",
+      lenses: {
+        systems: {
+          id: "lens-p4",
+          title: "Placeholder: Project four, mini architecture",
+          summary: "Placeholder: WAN to firewall to VLANs to hosts.",
+          description: "Placeholder: WAN to firewall to VLANs to hosts.",
+          nodes: [
+            { id: "w", label: "WAN" },
+            { id: "f", label: "Firewall", security: true },
+            { id: "v", label: "VLANs" },
+            { id: "h", label: "Hosts" },
+          ],
+          edges: [{ label: "Inbound" }, { label: "Filtered", security: true }, { label: "Trunk" }],
+        },
+        security: {
+          threat: "Placeholder: lateral movement between segments.",
+          protection: "Placeholder: default-deny firewall rules between VLANs.",
+        },
+      },
     },
     {
       slug: "placeholder-project-five",
       title: "Placeholder: Project five",
       summary: "Placeholder: one line on a security assessment.",
+      outcome: "Placeholder: one-line outcome with a number.",
       tags: ["security"],
       role: "Placeholder: Security tester",
       year: "2024",
       screenshotAlt: "Placeholder: describe what the screenshot shows",
+      stackLevels: ["edge", "network"],
+      primaryLevel: "edge",
+      lenses: {
+        security: {
+          threat: "Placeholder: exposed admin panel behind a weak WAF rule.",
+          protection: "Placeholder: admin moved behind VPN, WAF rule tightened.",
+        },
+      },
     },
   ] satisfies Project[] as Project[],
 
@@ -477,4 +562,68 @@ export type Site = typeof site;
 /** True when a string is still placeholder content. */
 export function isPlaceholder(text: string) {
   return /^Placeholder:|\[Placeholder/.test(text);
+}
+
+/** Two-digit project number from its order in site.projects ("01"). */
+export function projectNumber(slug: string) {
+  return String(site.projects.findIndex((p) => p.slug === slug) + 1).padStart(2, "0");
+}
+
+/**
+ * Every project has a case study page (DESIGN.md). Projects without written
+ * content get the template filled with visibly marked placeholders.
+ */
+export function caseStudyFor(p: Project): CaseStudy {
+  if (p.caseStudy) return p.caseStudy;
+  const name = p.title.replace(/^Placeholder:s*/, "");
+  return {
+    lead: p.outcome,
+    meta: [
+      { label: "Role", value: p.role },
+      { label: "Year", value: p.year },
+      { label: "Team", value: "Placeholder: team size" },
+      { label: "Stack", value: "Placeholder: main technologies" },
+    ],
+    problem: ["Placeholder: what was broken or missing, for whom, and how you knew."],
+    decisions: [
+      {
+        title: "Placeholder: Key decision",
+        decision: "Placeholder: what you chose.",
+        rejected: "Placeholder: the alternative you rejected.",
+        why: "Placeholder: the evidence that settled it.",
+      },
+    ],
+    built: {
+      prose: ["Placeholder: how it is put together, in two or three sentences."],
+      stack: p.lenses.code && "stack" in p.lenses.code ? p.lenses.code.stack : ["Placeholder: main technologies"],
+      code: p.lenses.code && "code" in p.lenses.code ? [{ title: p.lenses.code.title, language: "ts", code: p.lenses.code.code }] : [],
+    },
+    architecture: p.lenses.systems
+      ? { ...p.lenses.systems, id: `arch-${p.slug}` }
+      : {
+          id: `arch-${p.slug}`,
+          title: `Placeholder: ${name} architecture`,
+          summary: "Placeholder: the main parts of the system and how a request moves through them.",
+          description: "Placeholder: the main parts of the system and how a request moves through them.",
+          nodes: [
+            { id: "client", label: "Client" },
+            { id: "service", label: "Service", detail: "Placeholder" },
+            { id: "data", label: "Data store", detail: "Placeholder" },
+          ],
+          edges: [{ label: "Request" }, { label: "Query" }],
+        },
+    security: {
+      threats: [
+        {
+          asset: "Placeholder: Main asset",
+          threat: p.lenses.security?.threat ?? "Placeholder: Main threat",
+          likelihood: "Placeholder: Likelihood",
+          mitigation: p.lenses.security?.protection ?? "Placeholder: Mitigation",
+        },
+      ],
+      protections: [p.lenses.security?.protection ?? "Placeholder: the main protection."],
+      testing: ["Placeholder: how it was tested."],
+    },
+    outcome: [{ metric: "Placeholder: Main result", before: "[Placeholder: metric]", after: "[Placeholder: metric]", method: "Placeholder: how it was measured" }],
+  };
 }

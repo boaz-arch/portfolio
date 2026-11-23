@@ -518,6 +518,13 @@ html[data-nav="morph-back"]::view-transition-new(.auto-nav) {
 ::view-transition-old(.morph) { animation: vt-fade-out 200ms var(--ease-out) both; }
 ::view-transition-new(.morph) { animation: vt-fade-in 240ms var(--ease-out) 80ms both; }
 
+/* /work lenses: rows that change height move into place; each lens area crossfades (<= 300ms). */
+::view-transition-group(.lens-row) { animation-duration: 300ms; }
+::view-transition-old(.lens-row),
+::view-transition-new(.lens-row) { animation-duration: 300ms; }
+::view-transition-old(.lens-swap) { animation: vt-fade-out 150ms var(--ease-out) both; }
+::view-transition-new(.lens-swap) { animation: vt-fade-in 200ms var(--ease-out) 80ms both; }
+
 /* Systems stack zoom (Descend the stack) */
 ::view-transition-old(.zoom-in),
 html[data-nav="zoom-in"]::view-transition-old(.auto-nav) {

@@ -224,7 +224,7 @@ Accessibility:
 The site should feel like one continuous space. Built on the View Transitions API through React's `<ViewTransition>` (stable in the installed Next.js 16.4 / React 19.3, so no experimental flag is needed) with matching `view-transition-name` values on shared elements.
 
 - **Project → case study:** the clicked project row's title, tags and number morph into the case study header while the row expands upward to fill the page. The rest of the list falls away. Back reverses it exactly.
-- **Featured projects on Home** use the same morph into their case studies.
+- **Featured items on Systems stack levels** that are projects use the same morph into their case studies.
 - **Previous / Next project** at the end of each case study use the same morph, so projects can be browsed as a sequence.
 - **Section → section:** the header and Inspect control stay fixed and never re-animate. Content moves along the grid's horizontal axis in nav order (going right in the nav slides content left, and the reverse), so pages feel like neighbours on one sheet.
 - **Nav:** a single active indicator slides to the new item.

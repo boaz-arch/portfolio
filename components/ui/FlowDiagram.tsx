@@ -228,7 +228,7 @@ function Vertical({ d, titleId, descId }: { d: Flow; titleId: string; descId: st
   );
 }
 
-export function FlowDiagram({ diagram }: { diagram: Flow }) {
+export function FlowDiagram({ diagram, compact = false }: { diagram: Flow; compact?: boolean }) {
   const d = diagram;
   const steps = d.edges.map((e, i) => {
     const from = d.nodes[i];
@@ -252,12 +252,13 @@ export function FlowDiagram({ diagram }: { diagram: Flow }) {
         <Vertical d={d} titleId={`${d.id}-v-title`} descId={`${d.id}-v-desc`} />
       </div>
 
-      <figcaption id={`${d.id}-cap`} className="mt-6 max-w-[68ch]">
+      {/* compact (inside a /work row): the description stays for screen readers; legend and text version stay. */}
+      <figcaption id={`${d.id}-cap`} className={compact ? "sr-only" : "mt-6 max-w-[68ch]"}>
         <span className="sr-only">{d.title}. </span>
         <span className="text-small text-text-secondary">{d.description}</span>
       </figcaption>
 
-      <ul aria-label="Diagram legend" className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-small text-text-secondary">
+      <ul aria-label="Diagram legend" className={`${compact ? "mt-3" : "mt-4"} flex flex-wrap gap-x-6 gap-y-2 text-small text-text-secondary`}>
         <li className="flex items-center gap-2">
           <svg width="28" height="8" aria-hidden="true">
             <line x1="0" y1="4" x2="28" y2="4" className="stroke-text-secondary" strokeWidth="1.5" />
@@ -286,7 +287,7 @@ export function FlowDiagram({ diagram }: { diagram: Flow }) {
         ) : null}
       </ul>
 
-      <details className="mt-4">
+      <details className={compact ? "mt-2" : "mt-4"}>
         <summary className="inline-flex min-h-11 cursor-pointer items-center text-label text-text underline">
           Text version of the {d.title.replace(/^Placeholder:\s*/, "")} diagram
         </summary>

@@ -2,14 +2,22 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { themeFor, transitionTypes } from "@/lib/routes";
+import { clean, themeFor, transitionTypes } from "@/lib/routes";
+
+type ReplayEvent = PopStateEvent & { __vtReplay?: true };
 
 /**
  * Navigation side effects (DESIGN.md: Accessibility → Navigation, Page transitions).
  *
- * 1. Popstate patch: Back/Forward navigations carry no transition types, so
- *    before React captures the transition we compute the same type from the
- *    previous and next URL and expose it as html[data-nav] / html[data-enter].
+ * 1. Back/Forward (popstate patch). Back/Forward navigations carry no
+ *    transition types, and React completes updates made *during* a trusted
+ *    popstate event synchronously, without a view transition. So the real
+ *    event is stopped in the capture phase and replayed to Next.js on the
+ *    next task, where React runs it as a normal transition. The type is
+ *    exposed as html[data-nav] / [data-enter]; ViewTransitions without a
+ *    type use their `default` class, which the CSS keys off those attributes.
+ *    Reduced motion or no View Transitions: the event passes straight
+ *    through, and Back is an instant swap.
  * 2. html[data-section] mirrors the current theme for chrome outside pages.
  * 3. After every client navigation, focus moves to the new page's h1.
  *    (Next.js's built-in route announcer reads the new document.title.)
@@ -20,16 +28,32 @@ export function RouteEffects() {
   const first = useRef(true);
 
   useEffect(() => {
-    const onPop = () => {
-      const types = transitionTypes(previous.current, location.pathname);
-      const html = document.documentElement;
-      const nav = types.find((t) => !t.startsWith("to-")) ?? "";
-      const enter = types.find((t) => t.startsWith("to-"))?.slice(3) ?? "";
-      html.dataset.nav = nav;
-      html.dataset.enter = enter;
+    const html = document.documentElement;
+
+    const onPop = (event: Event) => {
+      const e = event as ReplayEvent;
+      if (e.__vtReplay) return; // the replay goes straight to Next.js
+
+      const from = previous.current;
+      const to = location.pathname;
+      const types = transitionTypes(from, to);
+      html.dataset.nav = types.find((t) => !t.startsWith("to-")) ?? "";
+      html.dataset.enter = types.find((t) => t.startsWith("to-"))?.slice(3) ?? "";
+
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!("startViewTransition" in document) || reduce || clean(from) === clean(to)) return;
+
+      e.stopImmediatePropagation();
+      const state = history.state;
+      setTimeout(() => {
+        const replay = new PopStateEvent("popstate", { state }) as ReplayEvent;
+        replay.__vtReplay = true;
+        window.dispatchEvent(replay);
+      }, 0);
     };
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+
+    window.addEventListener("popstate", onPop, { capture: true });
+    return () => window.removeEventListener("popstate", onPop, { capture: true });
   }, []);
 
   useEffect(() => {
@@ -46,7 +70,7 @@ export function RouteEffects() {
     const clearHints = setTimeout(() => {
       delete html.dataset.nav;
       delete html.dataset.enter;
-    }, 600);
+    }, 700);
 
     // Focus the new page's h1 after the DOM has committed.
     const raf = requestAnimationFrame(() => {

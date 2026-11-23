@@ -851,11 +851,11 @@ The navigation type decides the animation:
 |---|---|---|
 | `nav-forward` | Target is to the right in nav order (Home < Work < Security < Systems < About < Contact < Accessibility) | Content slides left |
 | `nav-back` | Target is to the left in nav order | Content slides right |
-| `morph` | A project row, a featured project, or Previous / Next opens a case study | Row morphs into the header |
+| `morph` | A project row (on `/work` or a Systems level), or Previous / Next opens a case study | Row morphs into the header |
 | `morph-back` | A case study goes back to the list or Home | Header morphs back into the row |
 | `zoom-in` / `zoom-out` / `zoom-jump` | Moving between Systems stack levels, or from a case study's stack strip to a level | See Descend the stack |
 
-Types are attached with `<Link transitionTypes>` (Next 16.4 passes them to `React.addTransitionType`). Every navigation also carries `to-<theme>` so the destination theme can choose the enter animation; React joins the classes of all matching types. Back and Forward (popstate) carry no types, so a popstate listener computes the same type from the previous and next URL and sets `html[data-nav]` and `html[data-enter]` before React captures the transition; the CSS covers both selectors.
+Types are attached with `<Link transitionTypes>` (Next 16.4 passes them to `React.addTransitionType`). Every navigation also carries `to-<theme>` so the destination theme can choose the enter animation; React joins the classes of all matching types. Back and Forward (popstate) carry no types, so a popstate listener computes the same type from the previous and next URL and sets `html[data-nav]` and `html[data-enter]`; ViewTransitions without a matching type use their `default` class, which the CSS keys off those attributes. React also completes updates made *during* a trusted popstate event synchronously, with no view transition (so scroll restoration and native back gestures work), so the listener stops the real event in the capture phase and replays it to Next.js on the next task, where React runs it as a normal transition. Under reduced motion, or without View Transitions, the event passes straight through and Back is an instant swap.
 
 Back and Forward buttons get their type from the same nav-order comparison, so the motion always matches the direction of travel.
 
