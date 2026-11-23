@@ -223,9 +223,44 @@ Accessibility for navigation:
 
 ## Extras
 
-- Terminal (also used by the Security challenge, see Break in to get my CV) opened with the backquote key, detected by the physical key (`event.code === "Backquote"`, not `event.key`) so it works on Hebrew and other non-US layouts. Ignored while focus is in any input, textarea or contenteditable. A footer toggle turns the shortcut off, and a visible "Open terminal" button in the footer opens it without the keyboard. Commands: `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`.
+- **Site terminal**: one global terminal on every page, opened with the backquote key (detected by `event.code === "Backquote"`, so it works on Hebrew and other layouts; ignored while focus is in an input, textarea or contenteditable) or the footer "Open terminal" button. A footer toggle turns the shortcut off. The Security challenge runs as a mode inside this same terminal. See Site terminal below.
 - Real security headers in production, shown in the System layer.
 - Fast: Lighthouse 95+ on performance, best practices and SEO; 100 on accessibility.
+
+## Site terminal
+
+One terminal, global, on every page. The Security challenge is a mode inside it (`ctf`), not a separate terminal.
+
+Commands:
+- `help`: all commands, grouped (Info / Navigate / Site / Fun)
+- `whoami`: one-paragraph intro + current status (HEAD from the About log)
+- `about`: short bio + "open" link to `/about`
+- `cv`: link to the CV PDF (download) + one-line summary
+- `github`, `linkedin`: print the URL as a link and open it in a new tab on Enter
+- `contact`: email (plain text), PGP fingerprint, links; `contact --copy email` copies the email
+- `projects`: numbered list (number, title, tags, one-line outcome)
+- `open <n|slug>`: opens that project's case study (morph transition)
+- `cd <page>`: `cd work | security | systems | about | contact | ~`, with the normal page transitions; `cd ..` goes up (Systems levels too)
+- `ls`: lists the pages like a directory
+- `systems <level>`: jumps into a Systems level (internet, edge, network, host, containers, os)
+- `theme dark|light`
+- `inspect on|off|design|code|system`: controls the Inspect layers
+- `ctf`: starts or resumes the Security challenge mode; `exit` leaves the mode but keeps progress
+- `history`, `clear`, `exit`
+- Fun: `sudo hire boaz` prints a short "permission granted" message and opens contact.
+- Unknown commands: "command not found: X. Try 'help'." with the closest command suggested on a typo ("Did you mean 'projects'?").
+
+Behavior:
+- Tab completion for commands, page names, project slugs and Systems levels. Up/Down for history (kept in `sessionStorage`).
+- Every link printed is a real, focusable `<a>`. External links use `rel="noopener noreferrer"`.
+- Commands that navigate close the terminal first, then run the page transition, then focus goes to the new page's `h1`.
+- The terminal remembers whether it was open across navigation in the same tab.
+- All data comes from `content/site.ts`, never duplicated.
+- First open shows one line: "Type 'help' to see commands, or 'ctf' to try breaking in."
+
+Security: a pure JavaScript command parser with an allowlist of commands; no `eval`; no `innerHTML` with user input (text nodes only); links come only from `content/site.ts`, never from user input.
+
+Accessibility: a dialog labeled "Site terminal"; focus moves to the input on open and returns to the trigger on close; Escape closes it. Output is an `aria-live="polite"` log and command results are announced. The shortcut can be turned off in the footer (WCAG 2.1.4) and is documented on `/accessibility` with the command list. Every command has a normal on-page equivalent; nothing is terminal-only.
 
 ## Accessibility (hard requirement, not polish)
 
@@ -267,7 +302,7 @@ Target: **WCAG 2.2 Level AA**, which also satisfies Israeli Standard **IS 5568**
 
 - Inspect layer toggles announce their state (`aria-pressed`). Overlay labels must not create noise when off, and their info is available as a readable list when on.
 - Project filters announce the result count via an `aria-live` region.
-- Terminal: output in an `aria-live="polite"` log; input has a label.
+- Terminal: a dialog labeled "Site terminal"; output in an `aria-live="polite"` log; input has a label.
 - Theme toggle has an accessible name and state.
 - Links describe their destination (no "click here", no context-free "read more").
 - Contact form (if any): visible labels, errors tied with `aria-describedby`, error text that says how to fix it, no CAPTCHA puzzles.

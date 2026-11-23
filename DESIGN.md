@@ -501,14 +501,52 @@ Projects are a **list of rows**, not a grid of same-size cards.
 - **Content is real:** snippets are read from the source files at build time, never retyped.
 
 ### Terminal
-- **Opening:** opens with the backquote key, detected by **physical key** (`event.code === "Backquote"`, never `event.key`), so it works on Hebrew, Arabic, Russian and other non-US layouts, where that key produces a different character. It is ignored when focus is in an `input`, `textarea`, `select` or `contenteditable` element, when the terminal is already open, during IME composition (`event.isComposing`), and when Ctrl, Alt or Meta is held. It also opens from the always-visible "Open terminal" button in the footer. Ctrl+K is deliberately not used, because it's taken by browser search in Chrome and Edge on Windows.
-- **Shortcut setting:** single-character shortcuts can be turned off (WCAG 2.1.4), via the footer button "Keyboard shortcut: on". It is a toggle with `aria-pressed`, saved in `localStorage`, and documented on `/accessibility`.
-- **Container:** a native `<dialog>` opened with `showModal()`. Width `min(720px, 100% − 32px)`, max height 70svh, anchored to the bottom center (bottom sheet below md), surface-1, border-strong, radius md, overlay shadow.
-- **Title bar:** "Terminal" (label type, sans) plus a 44×44 Close button. No traffic-light dots.
-- **Body:** mono-terminal. The output is a `<div role="log" aria-live="polite">` that announces only new output. On open it prints "Type help to see commands. Press Escape to close."
-- **Input row:** a prompt `boaz@portfolio:~$` in design-accent (`aria-hidden`), then an `<input>` with `<label>` "Terminal command" (visually hidden), `autocomplete="off"`, `spellcheck="false"`. The caret is themed to design-accent.
-- **Commands:** `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`. Unknown input prints: "Command not found: x. Type help to see commands." Output links are real `<a>` elements. Arrow up/down cycles history.
-- **Closing:** Escape closes it, as do the Close button and backdrop click. Focus returns to whatever opened it (the footer button, or the element that was focused when the shortcut fired).
+
+One global **site terminal** on every page, mounted in the root layout. The Security challenge is a mode inside it.
+
+**Opening and closing**
+- Opens with the backquote key, detected by physical key (`event.code === "Backquote"`, never `event.key`), so it works on Hebrew, Arabic, Russian and other layouts. Ignored when focus is in an `input`, `textarea`, `select` or `contenteditable` element, during IME composition, when Ctrl/Alt/Meta is held, or when the terminal is already open. Ctrl+K is not used (browser search in Chrome and Edge on Windows).
+- Also opens from the always-visible "Open terminal" button in the footer.
+- The shortcut can be turned off with the footer toggle "Keyboard shortcut for terminal" (`aria-pressed`, saved in `localStorage`) (WCAG 2.1.4).
+- Closes with Escape, the Close button, a backdrop click, or `exit` (outside challenge mode). Focus returns to whatever opened it.
+- **Open state persists in the tab:** `sessionStorage` remembers whether it was open. If a navigation that the terminal did not start (Back/Forward, a reload) happens while it is open, it reopens on the new page with focus in the input; the page title is still announced. Commands that navigate close it first (below).
+
+**Container:** native `<dialog>` opened with `showModal()`, `aria-labelledby` its title "Site terminal". Width `min(720px, 100% − 32px)`, max height 70svh, anchored bottom center (a bottom sheet below md), surface-1, border-strong, radius md, overlay shadow. Title bar: "Site terminal" (label type, sans), the current mode in small text-muted ("Site" / "Challenge: guest@target" / "Challenge: boaz@ops"), and a 44×44 Close button. No traffic-light dots.
+
+**Body:** mono-terminal. Output is `<div role="log" aria-live="polite" aria-relevant="additions">`; each command's echo and result are appended as one block, so screen readers hear the result once. First open of the session prints "Type 'help' to see commands, or 'ctf' to try breaking in."
+
+**Input row:** prompt (`boaz@portfolio:~$`, or the challenge prompt) in the accent, `aria-hidden`; an `<input>` with `<label>` "Terminal command" (visually hidden), `autocomplete="off"`, `autocapitalize="off"`, `spellcheck="false"`. The SSH passphrase prompt swaps in an `<input type="password">` labeled "SSH passphrase".
+
+**Site commands** (all data from `content/site.ts`):
+
+| Group | Command | Result | On-page equivalent |
+|---|---|---|---|
+| Info | `help` | Commands grouped as Info / Navigate / Site / Fun (and Challenge while in `ctf` mode) | The command list on `/accessibility` |
+| Info | `whoami` | One-paragraph intro + current status (HEAD from the About log) | `/about` HEAD |
+| Info | `about` | Short bio + link "Open About" | Nav: About |
+| Info | `cv` | "Download CV (PDF)" link + one-line summary | CV links in footer, `/about`, `/security` |
+| Info | `github`, `linkedin` | Prints the profile link and opens it in a new tab (`window.open(url, "_blank", "noopener,noreferrer")`, triggered by the Enter key press) | Key card on `/contact`, footer |
+| Info | `contact` | Email (plain text), PGP fingerprint, profile links. `contact --copy email` copies the email and prints "Copied" | Key card on `/contact` |
+| Info | `projects` | Numbered list: number, title (link), tags, one-line outcome | `/work` |
+| Navigate | `open <n\|slug>` | Opens that case study with the morph | Project rows |
+| Navigate | `cd <page>` | `work`, `security`, `systems`, `about`, `contact`, `~` (home); `cd ..` goes up one level (a case study → `/work`, a Systems level → its parent level or `/systems`, a section → home) | Nav links, stack gauge |
+| Navigate | `ls` | The pages as a directory listing (`work/  security/  systems/  about/  contact/  accessibility`), each a link | Nav |
+| Navigate | `systems <level>` | Jumps to that Systems level (zoom transition) | Depth gauge |
+| Site | `theme dark\|light` | Switches theme | Theme toggle |
+| Site | `inspect on\|off\|design\|code\|system` | `on` turns on Design; `off` turns all off; a layer name toggles that layer | Inspect control |
+| Site | `ctf` | Starts or resumes the challenge mode | "Start engagement" on `/security` |
+| Site | `history`, `clear`, `exit` | History list; clears output; closes the terminal (in challenge mode, `exit` leaves the mode and keeps progress) | — |
+| Fun | `sudo hire boaz` | "Permission granted. Opening a secure channel…" then navigates to `/contact` | Nav: Contact |
+
+**Navigation from the terminal:** commands that navigate close the dialog first (no closing animation competes with the page transition), then call `router.push(href, { transitionTypes })` with the same types a link would use, then focus goes to the new page's `h1` as on every navigation.
+
+**Challenge mode** (`ctf`): the prompt becomes `guest@target:~$`, then `boaz@ops:~$` after a successful `ssh`. In this mode `ls`, `cat`, `cd`, `pwd`, `whoami`, `help` and `exit` operate on the simulated machine (see The vault), plus `decode`, `ssh`, `sudo -l`, `sudo <cmd>`, `hint`, `progress`, `skip`. Site commands that don't clash (`theme`, `inspect`, `cv`, `contact`, `projects`, `open`, `systems`, `github`, `linkedin`, `history`, `clear`) keep working, so a player can switch on Inspect without leaving the mode. `decode` also works outside the mode.
+
+**Parsing, completion, history**
+- A pure parser: trim, split on whitespace (respecting simple quotes), look the first word up in an allowlist map of command handlers. No `eval`, no `new Function`, no dynamic import from input. Output is rendered as React text nodes; links are built only from `content/site.ts` entries, never from input. External links get `rel="noopener noreferrer"` and `target="_blank"`.
+- Tab completes commands, page names, project slugs and numbers, Systems levels, and (in challenge mode) file names. One match completes; several matches print them in a line.
+- Up/Down walk history; history is kept in `sessionStorage` (last 50 commands).
+- Unknown command: "command not found: X. Try 'help'." If a command is within edit distance 2, add "Did you mean 'projects'?".
 
 ### Footer
 - A hairline top border, 64px top / 48px bottom padding. In small type, text-secondary:
@@ -526,7 +564,7 @@ Projects are a **list of rows**, not a grid of same-size cards.
 - **Read mode:** one column (columns 1–8 at lg). `h1` "Accessibility statement", then `h2` sections in this order:
   - Standard (WCAG 2.2 AA / IS 5568)
   - What we made accessible
-  - Keyboard shortcuts (the terminal shortcut and how to turn it off)
+  - Keyboard shortcuts (the terminal shortcut and how to turn it off, the Systems stack keys, Escape for Inspect) and the full terminal command list with each command's on-page equivalent
   - Known limitations
   - Tested with (a table of assistive technology × browser × date)
   - Accessibility coordinator (a `<dl>` of name, email and phone, all from `content/site.ts`)
@@ -594,7 +632,7 @@ Each subject is its own world inside one system. **Never changes between themes:
 
 ### The handshake: contact form (`/contact`)
 
-Layout at lg: the form in columns 1–6, the key card in columns 7–8 plus the Inspect margin is untouched. Below lg: key card first (so the email is visible without scrolling past a form), then the form.
+Layout at lg: the form in columns 1–5 and the key card in columns 6–8, so the Inspect margin (9–12) stays free. Below lg: key card first (so the email is visible without scrolling past a form), then the form.
 
 - **Step indicator:** `<ol aria-label="Form steps">` with three items, each "1 ClientHello: Who are you", "2 Negotiate: What's this about", "3 Key exchange: Your message". The protocol word is small text-muted; the plain words carry the meaning. Current step: `aria-current="step"`, accent square filled; done steps get a check icon and sr-only "completed".
 - **Steps** (one `<form method="post" action="/api/contact">`; each step is a `fieldset` with a `legend`):
@@ -910,7 +948,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 | Expandable panel | `details` / `summary` | Summary text | Native expanded/collapsed |
 | Diagram | `figure` > `svg role="img"` | `<title>` + `<desc>` | Text version in `details` |
 | Code panel | `figure role="region"` | `figcaption` (file path or title) | Copy button named "Copy code: <file>"; polite live region announces "Copied"; scrollable `pre` is focusable |
-| Terminal | `dialog` (modal) | "Terminal" (`aria-labelledby` title) | Output `role="log" aria-live="polite"`; input labeled "Terminal command" |
+| Terminal | `dialog` (modal) | "Site terminal" (`aria-labelledby` title) | Output `role="log" aria-live="polite"`; input labeled "Terminal command"; passphrase input labeled "SSH passphrase" |
 | Terminal opener | `button` | "Open terminal" | Returns focus here on close |
 | Shortcut toggle | `button` | "Keyboard shortcut for terminal" | `aria-pressed` |
 | Copy email | `button` | "Copy email address" | "Email copied" (polite) |
