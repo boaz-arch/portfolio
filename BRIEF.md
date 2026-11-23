@@ -97,7 +97,7 @@ Security hygiene:
 - The CSP stays strict; the terminal uses no `eval` and no `innerHTML` with user input (text is rendered safely).
 - `X-Ops-Hint` is set only on the `/ops-7f3a` route via `next.config` headers.
 - `robots.txt` still allows normal indexing of real pages; the challenge pages are `noindex`.
-- The public `cv.pdf` has personal metadata stripped (author, software, edit history).
+- The public `cv.pdf` has personal metadata stripped (author, software, edit history). Until the real CV is supplied, `/files/cv.pdf` is a one-page placeholder PDF with no metadata, clearly marked as a placeholder.
 
 Accessibility:
 - Playable by keyboard and screen reader: terminal output is an `aria-live` log, mission tracker updates are announced, hints are buttons.
