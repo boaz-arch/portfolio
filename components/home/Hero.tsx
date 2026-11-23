@@ -36,9 +36,10 @@ export function Hero() {
             {site.name}
           </h1>
           <p className="mt-4 max-w-[30ch] text-lead text-text-secondary">{site.tagline}</p>
-          <div ref={controlRef} className="mt-10">
+          <div ref={controlRef} className="js-only mt-10">
             <InspectControl />
           </div>
+          <p className="mt-12 max-w-[60ch] text-body text-text">{site.home.intro}</p>
         </div>
       </div>
     </section>

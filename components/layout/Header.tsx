@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { site } from "@/content/site";
@@ -8,7 +7,14 @@ import { MenuIcon, CrossIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { InspectControl } from "@/components/inspect/InspectControl";
 import { useInspect } from "@/components/providers/InspectProvider";
+import { TransitionLink } from "@/components/nav/TransitionLink";
+import { NAV, currentNav, isCaseStudy, themeFor } from "@/lib/routes";
 
+/**
+ * Persistent chrome. view-transition-name: site-header with no animation,
+ * so it never re-animates between pages. The active indicator has its own
+ * name (nav-indicator) and slides to the new item.
+ */
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -17,6 +23,8 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const panelId = useId();
+  const active = currentNav(pathname);
+  const theme = themeFor(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -39,48 +47,58 @@ export function Header() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  // The compact Inspect mirror shows everywhere except while the home hero's control is on screen.
   const showCompactInspect = !isHome || !heroControlVisible;
+  const ariaCurrent = (href: string) =>
+    active === href ? (isCaseStudy(pathname) ? ("true" as const) : ("page" as const)) : undefined;
 
   return (
     <header
       data-inspect="Header"
       data-source="components/layout/Header.tsx"
       className={[
-        "sticky top-0 z-30 bg-bg",
+        "site-header sticky top-0 z-30 bg-bg",
         "border-b transition-colors duration-(--dur-fast) ease-out",
         scrolled || menuOpen ? "border-border" : "border-transparent",
       ].join(" ")}
     >
       <div className="wrap h-16 items-center">
         <div className="col-full flex items-center gap-4">
-          <Link href="/" className="link-draw mr-auto text-subtitle text-text">
+          <TransitionLink href="/" className="mr-auto text-subtitle text-text">
             {site.name}
             {isHome ? null : <span className="sr-only">, home</span>}
-          </Link>
+          </TransitionLink>
 
           <nav aria-label="Primary" className="hidden lg:block">
             <ul className="flex items-center gap-1">
-              {site.nav.map((item) => (
-                <li key={item.href}>
-                  <Link
+              {NAV.map((item) => (
+                <li key={item.href} className="relative">
+                  <TransitionLink
                     href={item.href}
-                    className="inline-flex min-h-11 items-center px-3 text-label text-text-secondary transition-colors duration-(--dur-fast) ease-out hover:text-text"
+                    aria-current={ariaCurrent(item.href)}
+                    className={[
+                      "inline-flex min-h-11 items-center px-3 text-label transition-colors duration-(--dur-fast) ease-out hover:text-text",
+                      active === item.href ? "text-text" : "text-text-secondary",
+                    ].join(" ")}
                   >
-                    <span className="link-draw">{item.label}</span>
-                  </Link>
+                    {item.label}
+                  </TransitionLink>
+                  {active === item.href ? (
+                    <span aria-hidden="true" data-section={theme} className="nav-indicator" />
+                  ) : null}
                 </li>
               ))}
             </ul>
           </nav>
 
           {showCompactInspect ? (
-            <div className="hidden lg:block">
+            <div className="js-only hidden lg:block">
               <InspectControl variant="compact" />
             </div>
           ) : null}
 
-          <ThemeToggle />
+          <div className="js-only">
+            <ThemeToggle />
+          </div>
 
           <button
             ref={menuButton}
@@ -88,7 +106,7 @@ export function Header() {
             aria-expanded={menuOpen}
             aria-controls={panelId}
             onClick={() => setMenuOpen((o) => !o)}
-            className="inline-flex min-h-11 items-center gap-2 rounded-sm px-3 text-label text-text-secondary transition-colors duration-(--dur-fast) ease-out hover:bg-surface-1 hover:text-text lg:hidden"
+            className="js-only inline-flex min-h-11 items-center gap-2 rounded-sm px-3 text-label text-text-secondary transition-colors duration-(--dur-fast) ease-out hover:bg-surface-1 hover:text-text lg:hidden"
           >
             {menuOpen ? <CrossIcon size={16} /> : <MenuIcon size={16} />}
             Menu
@@ -96,23 +114,28 @@ export function Header() {
         </div>
       </div>
 
-      <div id={panelId} hidden={!menuOpen} className="border-t border-border bg-bg lg:hidden">
+      {/* Closed only once JavaScript runs (html.js); without it the panel is always shown below lg. */}
+      <div id={panelId} className={`menu-panel border-t border-border bg-bg lg:hidden ${menuOpen ? "" : "is-closed"}`}>
         <nav aria-label="Primary" className="wrap py-4">
           <ul className="col-full flex flex-col">
-            {site.nav.map((item) => (
+            {NAV.map((item) => (
               <li key={item.href}>
-                <Link
+                <TransitionLink
                   href={item.href}
+                  aria-current={ariaCurrent(item.href)}
                   onClick={() => setMenuOpen(false)}
-                  className="flex min-h-11 items-center text-subtitle text-text"
+                  className={[
+                    "flex min-h-11 items-center text-subtitle",
+                    active === item.href ? "text-text underline decoration-2 underline-offset-8" : "text-text-secondary",
+                  ].join(" ")}
                 >
-                  <span className="link-draw">{item.label}</span>
-                </Link>
+                  {item.label}
+                </TransitionLink>
               </li>
             ))}
           </ul>
           {showCompactInspect ? (
-            <div className="col-full mt-4">
+            <div className="js-only col-full mt-4">
               <InspectControl variant="compact" />
             </div>
           ) : null}

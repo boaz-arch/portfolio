@@ -422,7 +422,7 @@ Every component's accessible role, name and state is listed in the Accessibility
 - **Nav links:** Work (`/work`), Security (`/security`), Systems (`/systems`), About (`/about`), Contact (`/contact`). These are real routes, in this order; the order also sets the direction of section transitions. Label type, text-secondary, 44px tall hit area. Hover: text color. Current page: text color and `aria-current="page"` (a case study marks Work as current with `aria-current="true"`).
 - **Active indicator:** a single 2px bar in text color under the current link (not accent: the Two Signals Rule). It has its own `view-transition-name: nav-indicator`, so on navigation it slides and resizes to the new link instead of disappearing and reappearing. On Home and `/accessibility` no link is current and there is no bar.
 - **Header persistence:** the header has `view-transition-name: site-header` with no animation, so it, the compact Inspect control and the theme toggle never re-animate between pages.
-- **Without JavaScript:** the Menu button is hidden and the mobile nav list is shown open below the header, so every route stays reachable.
+- **Without JavaScript:** the Menu button is hidden and the mobile nav list is shown open below the header, so every route stays reachable. The panel is closed by a class that only applies under `html.js` (not the `hidden` attribute, which Tailwind's preflight forces to `display: none !important`).
 - **Below lg (1024px):** the links collapse behind a `Menu` button (five links, the Inspect mirror and the theme toggle do not fit one row below 1024px) that opens a panel directly below the header (not full screen, not a modal). Escape or a second press closes it and returns focus to the button.
 - **Labels:** `<nav aria-label="Primary">`; the footer nav is `aria-label="Footer"`; the case study's on-page list is `aria-label="On this page"`.
 
@@ -955,7 +955,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 | Case study pager | `nav` | "Case studies" | Links named "Previous case study: X" |
 
 ### Navigation
-- After every route change, focus moves to the new page's `h1` (`tabindex="-1"`, `focus({ preventScroll: true })`), and a polite live region announces the new page title.
+- After every route change, focus moves to the new page's `h1` (`tabindex="-1"`, `focus({ preventScroll: true })`), and the new page title is announced. Implementation: Next.js's built-in route announcer (an `aria-live` region that reads `document.title` on every client navigation; it is `assertive`, not polite) does the announcing. A second, polite region would make every title be read twice, so none is added.
 - New pages scroll to the top; Back and Forward restore the previous scroll position (Next.js router behaviour, kept).
 - Back/Forward and direct URL loads all work. Every page is server-rendered and works with JavaScript off. Controls that need JavaScript (Inspect, theme toggle, Menu button, filters, copy buttons, terminal buttons) are hidden until JavaScript runs: the inline head script adds `class="js"` to `<html>` before first paint, so there is no layout shift.
 - The skip link is the first focusable element on every page.

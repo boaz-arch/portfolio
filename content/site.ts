@@ -69,6 +69,25 @@ export const site = {
   lastUpdated: "2026-11-23",
   lang: "en",
 
+  /** The CV is always one plain link away (BRIEF.md: must-haves). */
+  cv: {
+    href: "/files/cv.pdf",
+    size: "1 KB", // Placeholder file; update when the real CV is added
+    placeholder: true,
+  },
+
+  home: {
+    intro:
+      "Placeholder: two sentences on what you do across design, development, systems and security, and what kind of work you want next.",
+    explore: [
+      { href: "/work", label: "Work", theme: "home", text: "Projects across design, development, systems and security, with case studies." },
+      { href: "/security", label: "Security", theme: "security", text: "Capture-the-flag challenges, lab write-ups, research, certifications, and a challenge to break in for my CV." },
+      { href: "/systems", label: "Systems", theme: "systems", text: "Descend the stack from the internet to the operating system, one level at a time." },
+      { href: "/about", label: "About", theme: "about", text: "The history behind the work, how I work, and the tools I use." },
+      { href: "/contact", label: "Contact", theme: "contact", text: "Email, PGP key, profiles, and a form for job offers, projects and collaboration." },
+    ],
+  },
+
   nav: [
     { href: "/#work", label: "Work" },
     { href: "/#security", label: "Security" },

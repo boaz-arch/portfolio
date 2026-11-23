@@ -149,6 +149,11 @@
   --color-security-tint: var(--c-security-tint);
   --color-transparent: transparent;
   --color-current: currentColor;
+  /* Section themes (DESIGN.md: Section themes) */
+  --color-accent: var(--accent);
+  --color-accent-tint: var(--accent-tint);
+  --color-signal-up: var(--c-signal-up);
+  --color-severity: var(--c-severity);
 
   --font-sans: var(--font-atkinson-next), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-atkinson-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -349,4 +354,241 @@
     overflow: hidden; clip: rect(0 0 0 0);
     white-space: nowrap; border: 0;
   }
+}
+
+/* ======================================================================
+   Section themes (DESIGN.md: Section themes)
+   Only the accent, motif, signature and transition flavor change.
+   --accent is registered so it can crossfade between themes.
+   ====================================================================== */
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e7eaef;
+}
+
+:root,
+:root[data-theme="dark"] {
+  --acc-home: #e7eaef;
+  --acc-design: #78aef5;
+  --acc-development: #4fc6bd;
+  --acc-systems: #9db2c7;
+  --acc-security: #e8ad4a;
+  --acc-about: #e6dccb;
+  --acc-contact: #78aef5;
+  --c-signal-up: #74c69d;
+  --c-severity: #ec8a83;
+}
+:root[data-theme="light"] {
+  --acc-home: #121821;
+  --acc-design: #1c5ac2;
+  --acc-development: #0a7069;
+  --acc-systems: #45607a;
+  --acc-security: #8a5300;
+  --acc-about: #5f5140;
+  --acc-contact: #1c5ac2;
+  --c-signal-up: #196b42;
+  --c-severity: #b02f27;
+}
+
+:root { --accent: var(--acc-home); }
+[data-section="home"] { --accent: var(--acc-home); }
+[data-section="design"] { --accent: var(--acc-design); }
+[data-section="development"] { --accent: var(--acc-development); }
+[data-section="systems"] { --accent: var(--acc-systems); }
+[data-section="security"] { --accent: var(--acc-security); }
+[data-section="about"] { --accent: var(--acc-about); }
+[data-section="contact"] { --accent: var(--acc-contact); }
+:root,
+[data-section] {
+  --accent-tint: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+/* In-place theme changes (the /work lenses) crossfade the accent. */
+[data-section] { transition: --accent var(--dur-slow) var(--ease-out); }
+
+/* ======================================================================
+   Without JavaScript (DESIGN.md: Navigation)
+   The head script adds .js before first paint, so nothing shifts.
+   ====================================================================== */
+html:not(.js) .js-only { display: none !important; }
+/* The mobile menu panel closes only when JavaScript can reopen it. */
+html.js .menu-panel.is-closed { display: none; }
+
+/* ======================================================================
+   Connected page transitions (DESIGN.md: Motion, Page transitions)
+   Classes come from <ViewTransition update={...}> in app/layout.tsx.
+   Back/Forward carry no types, so .auto-nav is keyed by html[data-nav]
+   and html[data-enter], set by the popstate patch in RouteEffects.
+   Page content animates transform and opacity; theme reveals add clip-path.
+   ====================================================================== */
+.site-header { view-transition-name: site-header; }
+
+/* Active nav indicator: one element that slides between items. */
+.nav-indicator {
+  view-transition-name: nav-indicator;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  background: var(--accent);
+  pointer-events: none;
+}
+@media (forced-colors: active) {
+  .nav-indicator { background: CanvasText; }
+}
+
+/* Never block clicks during a transition. */
+::view-transition { pointer-events: none; }
+
+/* Chrome that stays put: the page root and the header do not animate. */
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+::view-transition-group(*) {
+  animation-duration: 300ms;
+  animation-timing-function: var(--ease-out);
+}
+
+/* Section to section: a sideways step along the sheet (48px = two gutters). */
+::view-transition-old(.nav-forward),
+html[data-nav="nav-forward"]::view-transition-old(.auto-nav) {
+  animation: vt-out-left 240ms var(--ease-out) both;
+}
+::view-transition-new(.nav-forward),
+html[data-nav="nav-forward"]::view-transition-new(.auto-nav) {
+  animation: vt-in-from-right 360ms var(--ease-out) both;
+}
+::view-transition-old(.nav-back),
+html[data-nav="nav-back"]::view-transition-old(.auto-nav) {
+  animation: vt-out-right 240ms var(--ease-out) both;
+}
+::view-transition-new(.nav-back),
+html[data-nav="nav-back"]::view-transition-new(.auto-nav) {
+  animation: vt-in-from-left 360ms var(--ease-out) both;
+}
+
+/* Theme flavors: the destination decides the enter; the exit stays directional. */
+::view-transition-new(.to-design),
+html[data-enter="design"]::view-transition-new(.auto-nav) {
+  animation: vt-register 320ms var(--ease-out) both;
+}
+::view-transition-new(.to-development),
+html[data-enter="development"]::view-transition-new(.auto-nav) {
+  animation: vt-lines-in 360ms steps(12, end) both;
+}
+::view-transition-new(.to-systems),
+html[data-enter="systems"]::view-transition-new(.auto-nav) {
+  animation: vt-connect-in 380ms var(--ease-out) both;
+}
+::view-transition-new(.to-security),
+html[data-enter="security"]::view-transition-new(.auto-nav) {
+  animation: vt-unlock-in 360ms var(--ease-out) both;
+}
+
+/* Project to case study: the list falls away; the case study arrives as the header lands. */
+::view-transition-old(.morph-page),
+html[data-nav="morph"]::view-transition-old(.auto-nav) {
+  animation: vt-fall-away 250ms var(--ease-out) both;
+}
+::view-transition-new(.morph-page),
+html[data-nav="morph"]::view-transition-new(.auto-nav) {
+  animation: vt-fade-in 280ms var(--ease-out) 160ms both;
+}
+::view-transition-old(.morph-page-back),
+html[data-nav="morph-back"]::view-transition-old(.auto-nav) {
+  animation: vt-fade-out 250ms var(--ease-out) both;
+}
+::view-transition-new(.morph-page-back),
+html[data-nav="morph-back"]::view-transition-new(.auto-nav) {
+  animation: vt-rise-in 280ms var(--ease-out) 160ms both;
+}
+
+/* Shared project elements (row and case header) */
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-image-pair(.morph) { overflow: clip; }
+::view-transition-old(.morph) { animation: vt-fade-out 200ms var(--ease-out) both; }
+::view-transition-new(.morph) { animation: vt-fade-in 240ms var(--ease-out) 80ms both; }
+
+/* Systems stack zoom (Descend the stack) */
+::view-transition-old(.zoom-in),
+html[data-nav="zoom-in"]::view-transition-old(.auto-nav) {
+  animation: vt-zoom-old-in 300ms var(--ease-out) both;
+}
+::view-transition-new(.zoom-in),
+html[data-nav="zoom-in"]::view-transition-new(.auto-nav) {
+  animation: vt-fade-in 300ms var(--ease-out) 150ms both;
+}
+::view-transition-old(.zoom-out),
+html[data-nav="zoom-out"]::view-transition-old(.auto-nav) {
+  animation: vt-fade-out 300ms var(--ease-out) both;
+}
+::view-transition-new(.zoom-out),
+html[data-nav="zoom-out"]::view-transition-new(.auto-nav) {
+  animation: vt-zoom-new-out 300ms var(--ease-out) 150ms both;
+}
+::view-transition-old(.zoom-jump-in),
+html[data-nav="zoom-jump-in"]::view-transition-old(.auto-nav) {
+  animation: vt-jump-old-in 200ms var(--ease-out) both;
+}
+::view-transition-new(.zoom-jump-in),
+html[data-nav="zoom-jump-in"]::view-transition-new(.auto-nav) {
+  animation: vt-jump-new-in 300ms var(--ease-out) both;
+}
+::view-transition-old(.zoom-jump-out),
+html[data-nav="zoom-jump-out"]::view-transition-old(.auto-nav) {
+  animation: vt-jump-old-out 200ms var(--ease-out) both;
+}
+::view-transition-new(.zoom-jump-out),
+html[data-nav="zoom-jump-out"]::view-transition-new(.auto-nav) {
+  animation: vt-jump-new-out 300ms var(--ease-out) both;
+}
+
+@keyframes vt-out-left { to { opacity: 0; transform: translateX(-48px); } }
+@keyframes vt-out-right { to { opacity: 0; transform: translateX(48px); } }
+@keyframes vt-in-from-right { from { opacity: 0; transform: translateX(48px); } }
+@keyframes vt-in-from-left { from { opacity: 0; transform: translateX(-48px); } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fall-away { to { opacity: 0; transform: translateY(24px); } }
+@keyframes vt-rise-in { from { opacity: 0; transform: translateY(24px); } }
+@keyframes vt-register { from { opacity: 0; transform: translate(-6px, -6px); } }
+@keyframes vt-lines-in { from { clip-path: inset(0 0 100% 0); } }
+@keyframes vt-connect-in { from { clip-path: inset(0 100% 0 0); } }
+@keyframes vt-unlock-in { from { clip-path: inset(0 0 100% 0); opacity: 0.4; } }
+@keyframes vt-zoom-old-in { to { opacity: 0; transform: scale(0.96); } }
+@keyframes vt-zoom-new-out { from { opacity: 0; transform: scale(1.04); } }
+@keyframes vt-jump-old-in { to { opacity: 0; transform: scale(1.06); } }
+@keyframes vt-jump-new-in { from { opacity: 0; transform: scale(0.94); } }
+@keyframes vt-jump-old-out { to { opacity: 0; transform: scale(0.94); } }
+@keyframes vt-jump-new-out { from { opacity: 0; transform: scale(1.06); } }
+
+/* Reduced motion: instant page swap, no morph, no slide. The stack zoom keeps a 120ms crossfade. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  ::view-transition-old(.zoom-in),
+  ::view-transition-old(.zoom-out),
+  ::view-transition-old(.zoom-jump-in),
+  ::view-transition-old(.zoom-jump-out) {
+    animation: vt-fade-out 120ms linear both !important;
+  }
+  ::view-transition-new(.zoom-in),
+  ::view-transition-new(.zoom-out),
+  ::view-transition-new(.zoom-jump-in),
+  ::view-transition-new(.zoom-jump-out) {
+    animation: vt-fade-in 120ms linear both !important;
+  }
+  [data-section] { transition: none; }
 }

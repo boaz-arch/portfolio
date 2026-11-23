@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { site } from "@/content/site";
 import { FooterTools } from "@/components/layout/FooterTools";
+import { TransitionLink } from "@/components/nav/TransitionLink";
+import { CvLink } from "@/components/ui/CvLink";
 
 export function Footer() {
   return (
@@ -13,23 +14,26 @@ export function Footer() {
         <div className="col-full md:col-span-5">
           <p className="text-subtitle text-text">{site.name}</p>
           <p className="mt-1">{site.tagline}.</p>
+          <p className="mt-4">
+            <CvLink />
+          </p>
         </div>
 
         <nav aria-label="Footer" className="col-full md:col-span-4">
           <ul className="flex flex-col gap-1">
             <li>
-              <Link href="/accessibility" className="inline-flex min-h-11 items-center underline">
+              <TransitionLink href="/accessibility" className="inline-flex min-h-11 items-center underline">
                 Accessibility statement
-              </Link>
+              </TransitionLink>
             </li>
             <li>
-              <Link href="/#contact" className="inline-flex min-h-11 items-center underline">
+              <TransitionLink href="/contact" className="inline-flex min-h-11 items-center underline">
                 Contact
-              </Link>
+              </TransitionLink>
             </li>
             {site.contact.links.slice(0, 2).map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="inline-flex min-h-11 items-center underline">
+                <a href={l.href} rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline">
                   {l.label}
                 </a>
               </li>
