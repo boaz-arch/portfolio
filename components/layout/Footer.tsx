@@ -1,9 +1,19 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
 import { FooterTools } from "@/components/layout/FooterTools";
 import { TransitionLink } from "@/components/nav/TransitionLink";
 import { CvLink } from "@/components/ui/CvLink";
+import { formatDate } from "@/lib/format";
 
+/** Full footer on Home; a slim one-line footer on every other page (DESIGN.md: Footer). */
 export function Footer() {
+  const pathname = usePathname();
+  return pathname === "/" ? <FullFooter /> : <SlimFooter current={pathname} />;
+}
+
+function FullFooter() {
   return (
     <footer
       data-inspect="Footer"
@@ -53,11 +63,37 @@ export function Footer() {
   );
 }
 
-export function formatDate(iso: string) {
-  return new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+function SlimFooter({ current }: { current: string }) {
+  return (
+    <footer
+      data-inspect="Footer"
+      data-source="components/layout/Footer.tsx"
+      className="mt-(--section-y) border-t border-border py-6 text-small text-text-secondary"
+    >
+      <div className="wrap">
+        <div className="col-full flex flex-wrap items-center gap-x-6 gap-y-1">
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap items-center gap-x-6">
+              <li>
+                <TransitionLink
+                  href="/accessibility"
+                  aria-current={current === "/accessibility" ? "page" : undefined}
+                  className="inline-flex min-h-11 items-center underline"
+                >
+                  Accessibility statement
+                </TransitionLink>
+              </li>
+              <li>
+                <a href={site.cv.href} download className="inline-flex min-h-11 items-center underline">
+                  CV (PDF)
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <FooterTools />
+        </div>
+      </div>
+    </footer>
+  );
 }
+

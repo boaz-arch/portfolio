@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
-import { formatDate } from "@/components/layout/Footer";
+import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Accessibility statement",
