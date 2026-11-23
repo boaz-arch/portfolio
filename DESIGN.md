@@ -258,7 +258,7 @@ The palette is a cool, low-chroma slate scale with two accents that act as signa
 Each role is a CSS custom property on `:root` (dark) and `:root[data-theme="light"]`, exposed to Tailwind under the same names (`bg-surface-2`, `text-muted`, `border-strong`). Components use roles only, never hex values. Set `color-scheme: dark` / `light` with the theme so form controls, scrollbars and the caret follow.
 
 Translucent tints, decorative only (never text):
-- `design-tint`: design-accent at 8% (dark) / 7% (light). Fills grid column bands in the Design layer.
+- `design-tint`: design-accent at 8% (dark) / 7% (light). Fills grid column bands in the UI layer.
 - `security-tint`: security-accent at 10% (dark) / 8% (light). Fills security callouts behind amber text, which still passes at the listed ratios.
 
 ### Contrast table
@@ -370,7 +370,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 | xl | 1440px | 12 | 32px | auto, ≥64px | The container caps at its max width. |
 
 - **Max content width:** 1200px (75rem) inside the side margins, aligned left in the container. The container itself is centered in the viewport, so both content edges are equal.
-- **The grid is always 12 columns.** The Design layer draws the real grid at every width; it never draws a different one. On narrow screens content spans `1 / -1`.
+- **The grid is always 12 columns.** The UI layer draws the real grid at every width; it never draws a different one. On narrow screens content spans `1 / -1`.
 - **Reading measure:** running text spans columns 1–8 at lg and above (≈ 760px at 1200, about 68ch at 16px) and never spans all 12.
 - **Reflow:** at 320 CSS px (and at 200% zoom on a 640px window) every page is one column with no horizontal scroll. Tables that can't fit turn into stacked definition lists below md. Code panels are the only thing allowed to scroll sideways, and only inside their own body. The page itself never does.
 
@@ -436,14 +436,28 @@ Every component's accessible role, name and state is listed in the Accessibility
 - **No flash of the wrong theme:** a small inline script in `<head>`, before any stylesheet paints, reads `localStorage.theme` (in try/catch). It falls back to dark, never to `prefers-color-scheme`, since the brief says dark by default. It sets `data-theme` and `color-scheme` on `<html>`. The choice is saved on every toggle. Changing theme swaps tokens instantly with no color transition.
 
 ### Inspect control
-- **Shape:** a group with the visible label "Inspect" (label type, text-secondary) followed by three joined toggle segments: **Design**, **Code**, **System**. Each segment is 44px tall, radius none on inner joins and sm on the outer corners, with a 1px border-strong outline. Each has a 16px drafting icon (grid square / angle brackets / three linked nodes) plus its text.
+- **Shape:** a group with the visible label "Inspect" (label type, text-secondary) followed by three joined toggle segments: **UI**, **Code**, **System**. Each segment is 44px tall, radius none on inner joins and sm on the outer corners, with a 1px border-strong outline. Each has a 16px drafting icon (grid square / angle brackets / three linked nodes) plus its text.
 - **States:** off is surface-1 with text-secondary text and a **hollow 8px square** indicator. On (`aria-pressed="true"`) is surface-3 with text color and a **filled 8px square** in design-accent, or security-accent for System. The filled/hollow square carries state without relying on color. Layers toggle independently, so several can be on at once.
 - **Show as list:** when any layer is on, a fourth button "Show values as list" appears after the group. It opens the Inspect legend (below), which is the readable version of everything the film draws.
-- **Placement:** on home, inline in the hero under the lead line. On every other page, and in the header on home once the hero scrolls away, there is a compact version: in the header bar from lg (icons, with text labels from xl), and inside the Menu panel below lg. Names are kept as accessible names when hidden visually. Below md the full control stacks its "Inspect" label above the segments and drops the decorative icons so it fits 320px. Both instances share one state.
+- **Placement:** on Home, inline in the hero as the large "Inspect this page" control (see Home). On every other page, and in the header on home once the hero scrolls away, there is a compact version: in the header bar from lg (icons, with text labels from xl), and inside the Menu panel below lg. Names are kept as accessible names when hidden visually. Below md the full control stacks its "Inspect" label above the segments and drops the decorative icons so it fits 320px. Both instances share one state.
 - **Keyboard:** Tab reaches each segment. Space/Enter toggles. Escape turns every layer off and returns focus to the segment that last changed state.
 
 ### Home
-- Hero (name as `h1` in display type, the one line, the full Inspect control), then a short intro paragraph (lead type, columns 1–8), then **Featured work**: 3 project rows in the same row component as `/work`, then **Explore**: a plain list of links into each section page, each with a one-line description. No cards, no icon-plus-heading grid.
+
+A minimal entry point. The header nav is the way into sections; Home has no intro paragraph, no Explore links and no featured projects.
+
+**Layout.** From lg: the photo in columns 1–5, the text and controls in columns 7–12, vertically centred against each other, with section-y space above and below. Below lg: stacked, photo first at a smaller size (max 280px wide at base, 360px at md), then the text and controls. Theme: The Sheet.
+
+- **Photo:** 4:5 frame, radius md, 1px border. Until the real file exists (`/public/images/boaz.jpg`), a neutral placeholder: surface-1 fill with the hatch, and a clear "[PLACEHOLDER PHOTO]" label (small, text-muted, on a surface-1 plate). The placeholder is `role="img"` with the same alt text the photo will have. The real photo is served with `next/image`: explicit width and height (from `content/site.ts`), `sizes` matching the layout (`(min-width: 1024px) 40vw, (min-width: 768px) 360px, 280px`), `priority` (it is the LCP element), so there is no layout shift. Alt: "Boaz King" plus a short description, from `content/site.ts`. Never decorative, never inside a link.
+- **h1:** the name in display type. Under it the line "I design, build and secure digital products." in lead type, text-secondary.
+- **How this site works:** an `h2` in title type, then 3–4 sentences (body, max 60ch) from `content/site.ts`.
+- **Controls:** two groups, stacked with 32px between them, both large (min-height 56px, label type at 16px):
+  - **Open terminal:** a secondary button with the terminal icon, and beside it in small text-muted: "or press the ` key (left of 1)". The key is shown as an inline key cap (surface-2, 1px border, radius xs), in the sans, not mono. Without JavaScript the button and hint are hidden.
+  - **Inspect:** the visible label "Inspect this page" and three joined toggle segments **UI**, **Code**, **System** (each `aria-pressed`, accessible names "UI layer", "Code layer", "System layer"), each with its icon and the filled/hollow state square. This is the same control as the header's compact copy (one shared state); the header copy is hidden on Home while this one is on screen. Without JavaScript the group is hidden.
+- **On Home the layers explain Home:** UI draws the grid, spacing and type redlines on the photo and the text block; Code tags `<HomePhoto>`, `<HomeIntro>`, `<InspectControl>` and shows their real source; System opens the request flow and the real response headers of `/`.
+- **Inspect labels on Home:** the Margin Rule does not apply here (the text uses columns 7–12). From lg, plates sit in the free space around the two blocks: column 6 (the gap between photo and text), the space above the photo and text, and below the controls. Below lg, labels go to the legend as on every page.
+
+**The first draw-in is the signature moment of the site.** On Home the UI layer's first draw-in follows the standard choreography (Motion: The draw-in) with one addition: the photo is the lead outline (it traces first, at 0ms), the text block's type plates follow in reading order, and the grid sweep runs underneath both. It plays in full only the first time UI is turned on in a session; later toggles on Home use the shorter standard timing. Reduced motion: drawn at once.
 
 ### Project row (Selected work)
 Projects are a **list of rows**, not a grid of same-size cards.
@@ -533,7 +547,7 @@ One global **site terminal** on every page, mounted in the root layout. The Secu
 | Navigate | `ls` | The pages as a directory listing (`work/  security/  systems/  about/  contact/  accessibility`), each a link | Nav |
 | Navigate | `systems <level>` | Jumps to that Systems level (zoom transition) | Depth gauge |
 | Site | `theme dark\|light` | Switches theme | Theme toggle |
-| Site | `inspect on\|off\|design\|code\|system` | `on` turns on Design; `off` turns all off; a layer name toggles that layer | Inspect control |
+| Site | `inspect on\|off\|ui\|code\|system` | `on` turns on UI; `off` turns all off; a layer name toggles that layer | Inspect control |
 | Site | `ctf` | Starts or resumes the challenge mode | "Start engagement" on `/security` |
 | Site | `history`, `clear`, `exit` | History list; clears output; closes the terminal (in challenge mode, `exit` leaves the mode and keeps progress) | — |
 | Fun | `sudo hire boaz` | "Permission granted. Opening a secure channel…" then navigates to `/contact` | Nav: Contact |
@@ -597,7 +611,7 @@ Each subject is its own world inside one system. **Never changes between themes:
 | Theme | Where | Accent (dark / light) | Motif | Signature | Transition flavor (enter) |
 |---|---|---|---|---|---|
 | **The Sheet** | `/`, `/work` unfiltered, `/accessibility` | Neutral: `#e7eaef` / `#121821` (the text color) | None | Section links preview where they lead: each link has a 12px square in that section's accent before its label | The default directional slide |
-| **Drafting table** | Design work: `/work` filtered to Design, case studies whose primary tag is Design | Blueprint blue `#78aef5` / `#1c5ac2` | Faint fine grid like cutting-mat graph paper: 8px minor lines, 40px major lines, `--motif` | Hovering or focusing a project row draws its measurement redlines: the Design layer scoped to that row only (outline, size plate, padding dimensions) | Content drops into registration: `translate(−6px, −6px) → 0`, opacity 0 → 1, 320ms ease-out, while four 12px registration crosshairs at the content corners fade in and out (decoration) |
+| **Drafting table** | Design work: `/work` filtered to Design, case studies whose primary tag is Design | Blueprint blue `#78aef5` / `#1c5ac2` | Faint fine grid like cutting-mat graph paper: 8px minor lines, 40px major lines, `--motif` | Hovering or focusing a project row draws its measurement redlines: the UI layer scoped to that row only (outline, size plate, padding dimensions) | Content drops into registration: `translate(−6px, −6px) → 0`, opacity 0 → 1, 320ms ease-out, while four 12px registration crosshairs at the content corners fade in and out (decoration) |
 | **The editor** | Development: `/work` filtered to Development, case studies whose primary tag is Development | Cyan-teal `#4fc6bd` / `#0a7069` | Faint line numbers down the left page margin of long pages (md and up; the margin is too narrow below md) | Case study code panels show the real component, and a "View source" toggle (`aria-pressed`) on each section reveals the JSX behind the section you are reading, in a code panel under its heading | Lines in: the new content is revealed top to bottom in steps of one line height (`clip-path` with `steps()`), 360ms total. Whole lines, never characters: no typewriter |
 | **The network** | `/systems`, case studies whose primary tag is Systems | Steel blue-grey `#9db2c7` / `#45607a`. Signal green `#74c69d` / `#196b42` **only** for healthy / up states, always with a check icon and the word "Up" | A faint static topology map (nodes and links) in the outer margins | Interactive architecture diagram: each node is a focusable button; hover or focus highlights its links and shows a spec card (OS, role, ports). Optional slow packet along one route (6px square, 4s per pass), paused on hover and focus, with a visible "Pause animation" button (WCAG 2.2.2), removed under reduced motion | Connects in along the diagram lines: content reveals from the left edge (`clip-path: inset(0 100% 0 0) → inset(0)`), 380ms ease-out |
 | **The vault** | `/security`, case studies whose primary tag is Security | Amber `#e8ad4a` / `#8a5300`. Muted severity red `#ec8a83` / `#b02f27` **only** for Critical / High labels, always text + icon | Faint redaction bars in the outer margins, and a document-classification line at the top of the page ("Classification: Public · Portfolio record · Updated <date>") in small text-muted type | Write-ups start with key details redacted by solid bars. A "Declassify" button (`aria-pressed`) per write-up reveals them. The bars are `aria-hidden` overlays on the real text, so screen readers always get the full text. Severity: text + icon + color | Unlock: a single 1px accent scan line passes top to bottom while the content clips in behind it, 360ms ease-out |
@@ -768,15 +782,17 @@ Light-mode signal green was first drafted as `#1f7a4c`, which fails on surface-3
 
 ## Inspect overlay spec
 
+The three layers are named **UI**, **Code** and **System** everywhere: the toggle labels, their accessible names ("UI layer"), the terminal (`inspect ui`), the legend and this file. (The UI layer was called the Design layer in earlier drafts; "Design" now only names the discipline and its tag.)
+
 General rules for all three layers:
 - **Persistence:** which layers are on survives navigation (the state lives in the root layout) and reloads within the tab (`sessionStorage`). A layer restored after navigation is drawn in its final state, without the draw-in.
-- **The grid is the sheet:** the Design layer's 12 columns are a fixed, viewport-sized layer with `view-transition-name: film-grid` and no transition animation, so the lines stay exactly in place while pages slide or morph underneath. Outlines, dimensions and plates belong to the page: they are cleared before a navigation is captured and redrawn on the new page.
+- **The grid is the sheet:** the UI layer's 12 columns are a fixed, viewport-sized layer with `view-transition-name: film-grid` and no transition animation, so the lines stay exactly in place while pages slide or morph underneath. Outlines, dimensions and plates belong to the page: they are cleared before a navigation is captured and redrawn on the new page.
 - The film is one `<div aria-hidden="true">` positioned over `main`, `pointer-events: none`, rendered only while at least one layer is on. When off it doesn't exist in the DOM, so screen readers hear nothing.
 - Values come from `getComputedStyle` on the live elements, mapped back to token names through a build-time token map, for example `space-8 · 32px`, `headline · 36/41 · 600`. If a computed value has no matching token, the plate says so ("32px · no token") rather than hiding the mismatch.
 - The film redraws on resize and theme change (debounced 150ms) and covers the full page height. Elements outside the viewport are drawn in their final state.
 - Everything the film shows is also listed in the **Inspect legend** (below).
 
-### Design layer (blueprint blue, solid lines)
+### UI layer (blueprint blue, solid lines)
 - **Grid:** the 12 real columns as design-tint bands across `main`'s full height. Column edges are 1px dashed (2 4) design-accent, so they pass the 3:1 graphics requirement without a solid fill. At the top of the viewport, a plate reads `12 col · gutter 24px · margin 48px` with the live values.
 - **Component outlines:** 1px solid design-accent rectangles on component roots (header, nav, hero, section, project row, panel, footer). Each outline's top-left corner has a 5px square node. A leader runs to a plate with the component's role and size: `ProjectRow · 760×184`.
 - **Spacing:** dimension lines drawn in the actual gaps (section padding, heading margins, row gaps): 1px design-accent with 7px 45° slash ticks at both ends. The plate sits inside the gap when the gap is ≥ 24px. Smaller gaps get a leader out to the margin columns.
@@ -784,7 +800,7 @@ General rules for all three layers:
 - **Plates:** design-accent fill, on-accent text, mono-annotation, `2px 6px`, radius none, `min-height` (not height) so text spacing can expand them.
 
 ### Code layer (blueprint blue, dashed lines)
-- **Outlines:** 1px dashed (4 2) design-accent on the same component roots. Dashed versus solid tells it apart from the Design layer when both are on.
+- **Outlines:** 1px dashed (4 2) design-accent on the same component roots. Dashed versus solid tells it apart from the UI layer when both are on.
 - **Name tags:** at each outline's top-left, outside the box: a code-name-tag plate (surface-3 fill, 1px design-accent border, design-accent text): `<ProjectRow>`, `<InspectControl>`.
 - **Snippets:** one code panel per section, placed in the margin (columns 9–12) next to the section's `h2`. It shows the real source of that section's main component. At most one snippet per section, so the margin never fills up.
 
@@ -814,7 +830,7 @@ A motion system with **two parts**: (1) connected page transitions, which make t
 Built on the View Transitions API through React's `<ViewTransition>` (stable in Next.js 16.4 / React 19.3, so no experimental flag exists or is needed). `<Link transitionTypes>` tags each navigation with its type. Rules:
 - 250–450ms, `ease-out`, transform and opacity only on page content. The browser's shared-element group animation also interpolates the snapshot box size; that happens in the transition overlay, not in the document, so nothing re-lays out.
 - Never block clicks: `::view-transition { pointer-events: none }`, so input goes to the new page underneath. A new navigation skips the running transition.
-- Root (`::view-transition-old/new(root)`) has no animation. The header (`site-header`) and the fixed Design-layer grid (`film-grid`) have no animation either, so they stay put.
+- Root (`::view-transition-old/new(root)`) has no animation. The header (`site-header`) and the fixed UI-layer grid (`film-grid`) have no animation either, so they stay put.
 - Browsers without View Transitions navigate instantly. Nothing waits for an animation to finish.
 
 The navigation type decides the animation:
@@ -871,7 +887,7 @@ Back and Forward buttons get their type from the same nav-order comparison, so t
 ### The draw-in (signature)
 Total budget: ≤ 1000ms from press to fully drawn. Only elements in the viewport animate; everything else appears already drawn.
 
-**Design layer:**
+**UI layer:**
 1. **0ms, grid.** Column edges extend downward from the top of the viewport (`scaleY 0 → 1`, origin top, 400ms ease-plot), staggered 16ms per column from 1 to 12, a left-to-right sweep. Bands fade in under them (0 → 1, 200ms).
 2. **120ms, outlines.** Each outline traces from its top-left node clockwise (SVG `stroke-dashoffset`, 480ms ease-plot), staggered 40ms in reading order. At most 8 stagger steps; the rest start with the 8th.
 3. **360ms, dimensions.** Each dimension line grows from its first tick to its second (240ms ease-plot); the second tick appears when the line arrives.
@@ -896,7 +912,7 @@ Every animation has a reduced form, and every reduced form is the instant end st
 
 | Animation | Reduced version |
 |---|---|
-| Design draw-in (grid, outlines, dimensions, plates) | Film appears fully drawn at once |
+| UI draw-in (grid, outlines, dimensions, plates) | Film appears fully drawn at once |
 | Code draw-in (dashes, tags, snippets) | Appears fully drawn at once |
 | System sheet reveal and diagram build | Sheet and full diagram appear at once |
 | Packet trace | Not played. A static route highlight shows the path. |
@@ -938,7 +954,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 | Menu button (< md) | `button` | "Menu" | `aria-expanded`, `aria-controls` the panel |
 | Theme toggle | `button` | "Dark theme" | `aria-pressed` true = dark |
 | Inspect group | `div role="group"` | "Inspect" (`aria-labelledby` visible label) | n/a |
-| Inspect segment | `button` | "Design layer" / "Code layer" / "System layer" | `aria-pressed`. On change, the polite status region says "Design layer on, 14 values listed" |
+| Inspect segment | `button` | "UI layer" / "Code layer" / "System layer" | `aria-pressed`. On change, the polite status region says "UI layer on, 14 values listed" |
 | Show values as list | `button` | "Show Inspect values as a list" | `aria-expanded`, `aria-controls` legend |
 | Inspect film | `div` | n/a | `aria-hidden="true"` (removed from DOM when off) |
 | Inspect legend | `aside` | "Inspect values" | Headings per layer, `ol` of entries |
@@ -967,7 +983,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 - Links describe their destination. There is no "read more"; write-up links use the write-up title.
 
 ### Color is never the only signal
-- Tags have an icon and a word. Pressed toggles have a filled square and `aria-pressed`. Security items carry a shield icon plus the word "Security". Header status shows a check/cross icon plus "Present"/"Missing". Diagram line meaning is solid versus dashed plus a legend. Links are underlined. Code-layer outlines are dashed versus solid in the Design layer.
+- Tags have an icon and a word. Pressed toggles have a filled square and `aria-pressed`. Security items carry a shield icon plus the word "Security". Header status shows a check/cross icon plus "Present"/"Missing". Diagram line meaning is solid versus dashed plus a legend. Links are underlined. Code-layer outlines are dashed versus solid in the UI layer.
 
 ### Media
 - Informative images have alt text that describes what they show. Decorative images use `alt=""`. Placeholder frames carry their visible "Placeholder" text.

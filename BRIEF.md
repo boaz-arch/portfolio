@@ -11,9 +11,9 @@ Personal portfolio for Boaz King, who designs, builds and secures digital produc
 
 ## Core concept
 
-Calm, minimal and dark at first glance; deep and technical underneath. A single **Inspect** control reveals three overlay layers on top of the real page:
+Calm, minimal and dark at first glance; deep and technical underneath. A single **Inspect** control reveals three overlay layers on top of the real page, named the same everywhere (buttons, terminal, docs): **UI**, **Code**, **System**.
 
-1. **Design:** 12-column grid, spacing values, type sizes, component outlines (redline style).
+1. **UI:** 12-column grid, spacing values, type sizes, component outlines (redline style).
 2. **Code:** component names and short real code snippets for each section.
 3. **System:** live diagram of how the site is hosted and protected: request flow, CDN, TLS, security headers (CSP, HSTS, etc.).
 
@@ -36,7 +36,7 @@ Real routes, not one long page. Each page has its own `<title>`, one `<h1>` and 
 
 | Route | Content |
 |---|---|
-| `/` | Home: hero (name, one line "I design, build and secure digital products", Inspect control), short intro, 3 featured projects, links into each section |
+| `/` | Home: a minimal entry point (see Home below). The header nav is the way into sections. |
 | `/work` | All projects (4–6), tagged Design / Development / Systems / Security, with discipline filters and lenses |
 | `/work/[slug]` | Case study, one per project in `content/site.ts`: problem → design decisions → how it's built → system architecture diagram → security (threat model, protections, testing) → outcome with numbers. Ends with Previous / Next project. |
 | `/security` | Security work: CTFs, lab write-ups, research, certs. Expandable summaries. |
@@ -46,12 +46,28 @@ Real routes, not one long page. Each page has its own `<title>`, one `<h1>` and 
 | `/contact` | The handshake form plus a key card: email as plain text, PGP fingerprint, GitHub, LinkedIn, TryHackMe/HackTheBox |
 | `/accessibility` | Accessibility statement, linked from the footer on every page |
 
+## Home (minimal entry point)
+
+Home contains only:
+1. **A photo of Boaz.** Placeholder for now: a neutral rectangle with a clear "[PLACEHOLDER PHOTO]" label, never a stock photo. The real file goes at `/public/images/boaz.jpg`. Alt text "Boaz King" plus a short description, set in `content/site.ts`. Served with `next/image`, sized correctly, no layout shift, priority loading.
+2. **The h1:** the name, plus the one line "I design, build and secure digital products."
+3. **"How this site works"** (an h2): 3–4 sentences max, in `content/site.ts`, explaining that each section is its own world (Work, Security, Systems, About, Contact) reached from the header; that the Inspect buttons show how any page is built; that the terminal is a shortcut to everything (cv, github, contact, projects); and that the Security page hides a challenge, and breaking in gets the CV.
+4. **Two controls, large and clearly labeled:**
+   - "Open terminal" (opens the global site terminal), with the backquote key mentioned next to it.
+   - The Inspect control as three toggle buttons, "UI", "Code", "System" (`aria-pressed` each). On Home they reveal how this page is built: UI = grid, spacing and type redlines on the photo and text; Code = the components and real snippets behind Home; System = the request flow and the real security headers serving this page.
+
+Not on Home: an intro paragraph, Explore links, featured projects (those stay on `/work`).
+
+Design: calm and spacious. Photo and text side by side from 1024px (photo in columns 1–5, text and controls in columns 7–12), stacked below that (photo first, smaller). The Inspect layers' first draw-in on Home is the signature moment of the whole site and gets the most care. The header's Inspect control exists on every other page; on Home the in-page UI/Code/System buttons are the same control (one shared state), and the header copy stays hidden until the hero scrolls away.
+
+Accessibility: one h1 (the name); "How this site works" is an h2. The photo has meaningful alt text, is not decorative, and is not inside a link. All buttons are keyboard operable with a visible focus state; toggles announce their state. Without JavaScript the photo, h1 and description show, and the buttons that need JavaScript are hidden.
+
 ## Section themes
 
 Each subject feels like its own world while the site stays one system: same fonts, same 12-column grid, same header, same spacing scale. Each theme changes only its accent color, a subtle background motif, one signature interactive element, and the flavor of its page transition.
 
 - **Home, "The Sheet" (neutral):** the base slate theme. Light pulls from each section's accent appear in the links to those sections, as a preview of where each one leads.
-- **Design work, "Drafting table"** (projects tagged Design; `/work` filtered to Design): blueprint blue. Motif: very faint fine grid like cutting-mat graph paper. Signature: hovering or focusing a project shows its measurement redlines (the Design layer scoped to that item). Transition: content drops into place like a sheet aligning to registration marks.
+- **Design work, "Drafting table"** (projects tagged Design; `/work` filtered to Design): blueprint blue. Motif: very faint fine grid like cutting-mat graph paper. Signature: hovering or focusing a project shows its measurement redlines (the UI layer scoped to that item). Transition: content drops into place like a sheet aligning to registration marks.
 - **Development, "The editor"** (projects tagged Development): a cool cyan-teal, distinct from blueprint blue. Motif: faint line numbers along the left margin of long pages. Signature: case study code panels show the real component, and a "view source" toggle reveals the JSX behind the section being read. Transition: content comes in line by line (fast, ≤400ms total).
 - **Systems, "The network"** (`/systems`): steel blue-grey, with a soft signal green only for healthy/up states, never as a general accent (no hacker look). Motif: a faint static topology map. Signature: an interactive architecture diagram; hover/focus a node to highlight its connections and show specs (OS, role, ports). Optional slow packet along one route, paused on hover and removed under reduced motion. Transition: the new page connects in along the diagram lines.
 - **Security, "The vault"** (`/security`): amber, with a muted red only for severity labels (critical/high). Motif: faint redaction bars and a document-classification header like a declassified report. Signature: write-ups start with key details redacted; "Declassify" (click or keyboard) reveals them. Severity as text + icon + color. Screen readers always get the full text; redaction is visual only. Transition: content unlocks with a short scan line passing over it.
@@ -208,7 +224,7 @@ The site should feel like one continuous space. Built on the View Transitions AP
 - **Previous / Next project** at the end of each case study use the same morph, so projects can be browsed as a sequence.
 - **Section → section:** the header and Inspect control stay fixed and never re-animate. Content moves along the grid's horizontal axis in nav order (going right in the nav slides content left, and the reverse), so pages feel like neighbours on one sheet.
 - **Nav:** a single active indicator slides to the new item.
-- **Inspect:** the 12-column grid lines (Design layer on) stay in place across pages. Inspect on/off state and the chosen layers persist across navigation.
+- **Inspect:** the 12-column grid lines (UI layer on) stay in place across pages. Inspect on/off state and the chosen layers persist across navigation.
 
 Motion rules:
 - Transitions 250–450ms, ease-out, transform and opacity only, no layout thrash. Never block clicks; a new click cancels a running transition.
@@ -244,7 +260,7 @@ Commands:
 - `ls`: lists the pages like a directory
 - `systems <level>`: jumps into a Systems level (internet, edge, network, host, containers, os)
 - `theme dark|light`
-- `inspect on|off|design|code|system`: controls the Inspect layers
+- `inspect on|off|ui|code|system`: controls the Inspect layers
 - `ctf`: starts or resumes the Security challenge mode; `exit` leaves the mode but keeps progress
 - `history`, `clear`, `exit`
 - Fun: `sudo hire boaz` prints a short "permission granted" message and opens contact.
