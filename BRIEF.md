@@ -46,6 +46,8 @@ Real routes, not one long page. Each page has its own `<title>`, one `<h1>` and 
 | `/contact` | The handshake form plus a key card: email as plain text, PGP fingerprint, GitHub, LinkedIn, TryHackMe/HackTheBox |
 | `/accessibility` | Accessibility statement, linked from the footer on every page |
 
+**Footer.** The full footer appears on Home only. Every other page gets a slim one-line footer with only: the Accessibility statement link, the CV (PDF) link, the Open terminal button and the terminal shortcut on/off toggle.
+
 ## Home (minimal entry point)
 
 Home contains only:

@@ -565,12 +565,22 @@ One global **site terminal** on every page, mounted in the root layout. The Secu
 - Unknown command: "command not found: X. Try 'help'." If a command is within edit distance 2, add "Did you mean 'projects'?".
 
 ### Footer
-- A hairline top border, 64px top / 48px bottom padding. In small type, text-secondary:
-  1. the name and a one-line summary;
-  2. `<nav aria-label="Footer">` with Accessibility statement (`/accessibility`) on every page, plus Contact, GitHub, LinkedIn;
-  3. the "Open terminal" button and the "Keyboard shortcut: on/off" toggle;
+
+Two variants, chosen by route. Both are a `<footer>` landmark with a hairline top border, in small type, text-secondary; all links underlined; external links name their destination and get no icon.
+
+- **Full footer, Home only.** 64px top / 48px bottom padding:
+  1. the name and a one-line summary, and the CV link ("Download CV (PDF, size)");
+  2. `<nav aria-label="Footer">` with Accessibility statement (`/accessibility`), Contact, GitHub profile, LinkedIn profile;
+  3. the "Open terminal" button and the terminal shortcut toggle;
   4. "Last updated" with a `<time>`.
-- All links are underlined. External links name their destination ("GitHub profile", "LinkedIn profile") and get no icon.
+- **Slim footer, every other page.** One line (wrapping onto two or three below md), 24px vertical padding, items separated by 24px gaps, no name, no summary, no nav list beyond this:
+  - "Accessibility statement" link (`/accessibility`; on that page it is still shown, with `aria-current="page"`),
+  - "CV (PDF)" link (download),
+  - "Open terminal" button,
+  - terminal shortcut toggle.
+  The links sit in a `<nav aria-label="Footer">`; the two buttons follow it.
+- **Open terminal:** a text-style button (44px target) with the terminal icon. It dispatches `terminal:open`; the terminal returns focus to it on close. Hidden without JavaScript.
+- **Terminal shortcut toggle:** a `<button aria-pressed>` with the accessible name "Keyboard shortcut for terminal" and the visible text "Shortcut: on" / "Shortcut: off" (filled or hollow square, as on other toggles). Saved in `localStorage` (the accepted exception) and read by the terminal before it handles the backquote key. Hidden without JavaScript.
 
 ### Contact
 - The email is plain text inside a `mailto:` link, with a "Copy email" button that confirms in an `aria-live` region ("Email copied"). The profiles are GitHub, LinkedIn, TryHackMe and HackTheBox. The PGP key is optional: a fingerprint in grouped 4-character blocks (sans, tabular) with a link to the `.asc` file.
