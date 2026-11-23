@@ -2,6 +2,7 @@ import { site } from "@/content/site";
 import { Hero } from "@/components/home/Hero";
 import { Section } from "@/components/ui/Section";
 import { ProjectList } from "@/components/work/ProjectList";
+import { About, Contact, Process, SecurityWork, Systems, Toolbox } from "@/components/home/Sections";
 
 export default function HomePage() {
   return (
@@ -16,6 +17,12 @@ export default function HomePage() {
       >
         <ProjectList projects={site.projects} />
       </Section>
+      <SecurityWork />
+      <Systems />
+      <Process />
+      <Toolbox />
+      <About />
+      <Contact />
     </>
   );
 }

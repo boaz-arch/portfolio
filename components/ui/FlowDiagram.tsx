@@ -116,6 +116,7 @@ function Horizontal({ d, titleId, descId }: { d: Flow; titleId: string; descId: 
             {e.label ? (
               <text x={(x1 + x2) / 2} y={bottom + 28} textAnchor="middle" className="fill-text-secondary text-[14px]">
                 {e.label}
+                {e.security ? " (security)" : ""}
               </text>
             ) : null}
           </g>

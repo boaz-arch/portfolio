@@ -319,6 +319,16 @@
     font-size: 0.95em;
   }
 
+  /* Expandable panel: height opens with the content (interpolate-size where supported).
+     Durations are 0 under reduced motion, so it is instant there. */
+  :root { interpolate-size: allow-keywords; }
+  details.panel::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size var(--dur-base) var(--ease-out), content-visibility var(--dur-base) allow-discrete;
+  }
+  details.panel[open]::details-content { block-size: auto; }
+
   /* Code panel line numbers: generated, not copied, not announced */
   .code-lines .code-line::before {
     counter-increment: line;
