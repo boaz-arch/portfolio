@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+.env*
+.claude/settings.local.json
+.impeccable/
+playwright-report/
+test-results/
+*.log
