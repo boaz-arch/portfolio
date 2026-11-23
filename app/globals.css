@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/*
+ * DESIGN.md tokens. Every color, spacing step, radius, type role, breakpoint,
+ * shadow and motion value used on the site is defined here, once.
+ * Tailwind's default palettes and scales are reset, so a utility outside
+ * these tokens (bg-red-500, p-7, rounded-lg) does not exist.
+ */
+
+/* ---------- Theme roles (dark default) ---------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: #0f141b;
+  --c-surface-1: #151b24;
+  --c-surface-2: #1b222d;
+  --c-surface-3: #222a37;
+  --c-text: #e7eaef;
+  --c-text-secondary: #b4bcc8;
+  --c-text-muted: #8f98a6;
+  --c-border: #262f3c;
+  --c-border-strong: #6d7a8c;
+  --c-design: #78aef5;
+  --c-security: #e8ad4a;
+  --c-focus: #9cc4fa;
+  --c-on-accent: #0f141b;
+  --c-design-tint: rgb(120 174 245 / 0.08);
+  --c-security-tint: rgb(232 173 74 / 0.1);
+  --c-selection: rgb(120 174 245 / 0.35);
+  --c-backdrop: rgb(15 20 27 / 0.6);
+  --shadow-overlay-value: 0 24px 48px -16px rgb(4 7 12 / 0.6), 0 2px 6px rgb(4 7 12 / 0.4);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: #f4f6f8;
+  --c-surface-1: #ffffff;
+  --c-surface-2: #eceff3;
+  --c-surface-3: #e2e6ec;
+  --c-text: #121821;
+  --c-text-secondary: #3a4453;
+  --c-text-muted: #545e6d;
+  --c-border: #d6dbe2;
+  --c-border-strong: #717b8a;
+  --c-design: #1c5ac2;
+  --c-security: #8a5300;
+  --c-focus: #1c5ac2;
+  --c-on-accent: #ffffff;
+  --c-design-tint: rgb(28 90 194 / 0.07);
+  --c-security-tint: rgb(138 83 0 / 0.08);
+  --c-selection: rgb(28 90 194 / 0.25);
+  --c-backdrop: rgb(244 246 248 / 0.6);
+  --shadow-overlay-value: 0 24px 48px -16px rgb(18 24 33 / 0.18), 0 2px 6px rgb(18 24 33 / 0.08);
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --c-border: var(--c-border-strong);
+    --c-text-muted: var(--c-text-secondary);
+    --c-design-tint: transparent;
+    --c-security-tint: transparent;
+    --film-line: 2px;
+  }
+}
+
+/* ---------- Layout tokens ---------- */
+:root {
+  --margin: 16px;
+  --gutter: 12px;
+  --content-max: 1200px;
+  --header-h: 64px;
+  --section-y: clamp(4rem, 2rem + 8vw, 8rem);
+  --film-line: 1px;
+}
+@media (min-width: 375px) { :root { --margin: 20px; } }
+@media (min-width: 768px) { :root { --margin: 32px; --gutter: 24px; } }
+@media (min-width: 1024px) { :root { --margin: 48px; } }
+@media (min-width: 1440px) { :root { --margin: 64px; --gutter: 32px; } }
+
+/* ---------- Tailwind theme mapping ---------- */
+@theme {
+  --color-*: initial;
+  --spacing: initial;
+  --spacing-*: initial;
+  --radius-*: initial;
+  --text-*: initial;
+  --font-*: initial;
+  --font-weight-*: initial;
+  --shadow-*: initial;
+  --breakpoint-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+  --container-*: initial;
+
+  --breakpoint-sm: 375px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-32: 128px;
+
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-plot: cubic-bezier(0.45, 0, 0.15, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface-1: var(--c-surface-1);
+  --color-surface-2: var(--c-surface-2);
+  --color-surface-3: var(--c-surface-3);
+  --color-text: var(--c-text);
+  --color-text-secondary: var(--c-text-secondary);
+  --color-text-muted: var(--c-text-muted);
+  --color-border: var(--c-border);
+  --color-border-strong: var(--c-border-strong);
+  --color-design: var(--c-design);
+  --color-security: var(--c-security);
+  --color-focus: var(--c-focus);
+  --color-on-accent: var(--c-on-accent);
+  --color-design-tint: var(--c-design-tint);
+  --color-security-tint: var(--c-security-tint);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-sans: var(--font-atkinson-next), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-atkinson-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --shadow-overlay: var(--shadow-overlay-value);
+
+  /* Type roles: size, line-height, tracking, weight (DESIGN.md Typography) */
+  --text-display: clamp(2.5rem, 1.6rem + 4.2vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 600;
+  --text-page-title: clamp(2rem, 1.5rem + 2.4vw, 3rem);
+  --text-page-title--line-height: 1.1;
+  --text-page-title--letter-spacing: -0.025em;
+  --text-page-title--font-weight: 600;
+  --text-headline: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem);
+  --text-headline--line-height: 1.15;
+  --text-headline--letter-spacing: -0.02em;
+  --text-headline--font-weight: 600;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.01em;
+  --text-title--font-weight: 600;
+  --text-subtitle: 1.125rem;
+  --text-subtitle--line-height: 1.35;
+  --text-subtitle--letter-spacing: 0em;
+  --text-subtitle--font-weight: 600;
+  --text-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.005em;
+  --text-lead--font-weight: 400;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-body--letter-spacing: 0em;
+  --text-body--font-weight: 400;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-small--letter-spacing: 0.005em;
+  --text-small--font-weight: 400;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.25;
+  --text-label--letter-spacing: 0.01em;
+  --text-label--font-weight: 600;
+  --text-mono-annotation: 0.75rem;
+  --text-mono-annotation--line-height: 1.35;
+  --text-mono-annotation--letter-spacing: 0.01em;
+  --text-mono-annotation--font-weight: 500;
+  --text-mono-code: 0.8125rem;
+  --text-mono-code--line-height: 1.6;
+  --text-mono-code--letter-spacing: 0em;
+  --text-mono-code--font-weight: 400;
+  --text-mono-terminal: 0.875rem;
+  --text-mono-terminal--line-height: 1.6;
+  --text-mono-terminal--letter-spacing: 0em;
+  --text-mono-terminal--font-weight: 400;
+}
+
+/* ---------- Motion tokens ---------- */
+:root {
+  --dur-instant: 0ms;
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  --dur-draw: 480ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+    --dur-draw: 0ms;
+  }
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    scrollbar-color: var(--c-border-strong) var(--c-bg);
+    accent-color: var(--c-design);
+    caret-color: var(--c-design);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    min-height: 100svh;
+    background: var(--c-bg);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  ::selection { background: var(--c-selection); color: var(--c-text); }
+  h1, h2, h3, h4 { text-wrap: balance; }
+  p, li, dd { text-wrap: pretty; }
+  a { color: inherit; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+  :focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 2px;
+  }
+  main:focus { outline: none; }
+  @media (forced-colors: active) {
+    :focus-visible { outline-color: Highlight; }
+  }
+  code, kbd, samp, pre { font-family: var(--font-mono); }
+  table { border-collapse: collapse; }
+}
+
+/* ---------- Layout primitives ---------- */
+@layer components {
+  /* The 12-column grid. Always 12 columns; DESIGN.md Layout. */
+  .wrap {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(var(--content-max) + 2 * var(--margin));
+    margin-inline: auto;
+    padding-inline: var(--margin);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .col-full { grid-column: 1 / -1; }
+  /* Running text: all 12 columns on small screens, 1–8 from lg (the margin rule). */
+  .col-text { grid-column: 1 / -1; }
+  @media (min-width: 1024px) { .col-text { grid-column: 1 / span 8; } }
+
+  .section { padding-top: var(--section-y); }
+  .section > .wrap > h2 { margin-bottom: 32px; }
+
+  /* Underline-drawing link (hover/focus). Reduced motion: instant. */
+  .link-draw {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 calc(100% - 1px);
+    background-repeat: no-repeat;
+    transition: background-size var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  }
+  .link-draw:hover,
+  .link-draw:focus-visible,
+  .link-draw[aria-current] { background-size: 100% 1px; }
+
+  /* Placeholder hatch (DESIGN.md: never a stock image) */
+  .hatch {
+    background-color: var(--c-surface-1);
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--c-border) 0 1px,
+      transparent 1px 10px
+    );
+  }
+
+  /* Inline technical term in prose: sans, tinted (Mono Boundary Rule) */
+  .term {
+    background: var(--c-surface-2);
+    border-radius: 2px;
+    padding: 0 4px;
+    font-family: var(--font-sans);
+    font-size: 0.95em;
+  }
+
+  .sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap; border: 0;
+  }
+}

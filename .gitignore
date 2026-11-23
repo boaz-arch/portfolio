@@ -7,3 +7,11 @@ out/
 playwright-report/
 test-results/
 *.log
+
+# Next.js / TypeScript
+next-env.d.ts
+*.tsbuildinfo
+
+# Local screenshots and skill caches
+shots/
+.taste-skill/

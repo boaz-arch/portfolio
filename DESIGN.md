@@ -205,7 +205,7 @@ components:
 
 DESIGN.md is the source of truth for every page. It sits under BRIEF.md: if the two conflict, the brief wins and this file gets updated. If DESIGN.md conflicts with a skill (design-taste-frontend, Impeccable or any other), DESIGN.md wins.
 
-The direction is **pinned by BRIEF.md**. It names the world (calm dark slate, blueprint blue for design and code, amber for security, one sans plus a mono kept inside Inspect) and the first screen (name, one line, the Inspect control). So there was no direction roll. Linear and Vercel are **structural references only**: tonal surfaces with no shadows (Linear), a 4px spacing rhythm and a strict sans/mono split (Vercel). None of their colors, type, button shapes or motifs carry over.
+The direction is **pinned by BRIEF.md**. It names the world (calm dark slate, blueprint blue for design and code, amber for security, one sans plus a mono kept inside Inspect, the terminal and code panels) and the first screen (name, one line, the Inspect control). So there was no direction roll. Linear and Vercel are **structural references only**: tonal surfaces with no shadows (Linear), a 4px spacing rhythm and a strict sans/mono split (Vercel). None of their colors, type, button shapes or motifs carry over.
 
 ## Overview
 
@@ -220,7 +220,7 @@ The empty space has a job. At ≥1024px, columns 9–12 of each content section 
 **Key Characteristics:**
 - Deep slate in both directions: dark by default, cool paper in light mode. No pure black, no pure white page.
 - Two accents with fixed meanings: blueprint blue means design or code, amber means security. Nothing else is colored.
-- One sans for all content. Mono only inside Inspect and the terminal.
+- One sans for all content. Mono only inside Inspect, the terminal and code panels.
 - Depth from surface steps and 1px borders. A shadow only on floating layers.
 - Square drafting geometry for Inspect, small 2–6px radii for the interface, nothing fully rounded.
 - One signature motion: the film drawing itself in.
@@ -342,7 +342,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 | small | 14px | 400 | 1.5 | 0.005em | Metadata, tags, footer, figure descriptions |
 | label | 14px | 600 | 1.25 | 0.01em | Buttons, toggles, filters, nav. Sentence case. |
 | mono-annotation | 12px | 500 | 1.35 | 0.01em | Inspect plates and leaders. Never smaller. |
-| mono-code | 13px | 400 | 1.6 | 0 | Code panels in the Code layer |
+| mono-code | 13px | 400 | 1.6 | 0 | Code panels (Code layer and case studies) |
 | mono-terminal | 14px | 400 | 1.6 | 0 | Terminal input and output |
 
 - Weights used: 400 and 600 for sans; 400 and 500 for mono. No 700 or above.
@@ -351,7 +351,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 - All sizes are in `rem` so browser text zoom scales everything. All line heights are unitless so text-spacing overrides (line-height 1.5, paragraph spacing 2em, letter-spacing 0.12em, word-spacing 0.16em) reflow without clipping. Text containers never set a fixed `height`, and plates and chips use `min-height`.
 
 ### Named Rules
-**The Mono Boundary Rule.** Mono appears only inside the three Inspect layers, the Inspect legend and the terminal. Inline technical terms in prose (`Content-Security-Policy`, `nginx`) use the sans on a surface-2 tint with radius xs. Case studies show code through the Code layer, never as body code blocks.
+**The Mono Boundary Rule.** Mono appears only inside the three Inspect layers, the Inspect legend, the terminal and code panels. Case studies may include code panels; prose never does. Inline technical terms in prose (`Content-Security-Policy`, `nginx`) use the sans on a surface-2 tint with radius xs.
 
 **The Sentence Case Rule.** No all-caps text anywhere: no uppercase eyebrows, labels, buttons or nav. Text never carries a label above its heading.
 
@@ -372,7 +372,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 - **Max content width:** 1200px (75rem) inside the side margins, aligned left in the container. The container itself is centered in the viewport, so both content edges are equal.
 - **The grid is always 12 columns.** The Design layer draws the real grid at every width; it never draws a different one. On narrow screens content spans `1 / -1`.
 - **Reading measure:** running text spans columns 1–8 at lg and above (≈ 760px at 1200, about 68ch at 16px) and never spans all 12.
-- **Reflow:** at 320 CSS px (and at 200% zoom on a 640px window) every page is one column with no horizontal scroll. Tables that can't fit turn into stacked definition lists below md. Code panels wrap (`white-space: pre-wrap`) instead of scrolling sideways.
+- **Reflow:** at 320 CSS px (and at 200% zoom on a 640px window) every page is one column with no horizontal scroll. Tables that can't fit turn into stacked definition lists below md. Code panels are the only thing allowed to scroll sideways, and only inside their own body. The page itself never does.
 
 ### Spacing (4px base)
 
@@ -420,7 +420,7 @@ Every component's accessible role, name and state is listed in the Accessibility
 ### Header and nav
 - **Structure:** `<header>` sticky at the top, 64px tall, solid bg, a hairline `border` bottom only after scrolling 8px. It holds a wordmark link (the name in subtitle type, links home), the primary nav, the theme toggle, and (on pages other than home, or on home once the hero is out of view) the compact Inspect control.
 - **Nav links:** Work, Security, Systems, About, Contact. On home they jump to sections, on other pages they go to `/#section`. Label type, text-secondary, 44px tall hit area. Hover: text color plus an underline drawn left to right (`text-decoration-thickness: 1px; text-underline-offset: 6px`). Current section/page: text color, persistent underline and `aria-current`.
-- **Below md:** the links collapse behind a `Menu` button that opens a panel directly below the header (not full screen, not a modal). Escape or a second press closes it and returns focus to the button.
+- **Below lg (1024px):** the links collapse behind a `Menu` button (five links, the Inspect mirror and the theme toggle do not fit one row below 1024px) that opens a panel directly below the header (not full screen, not a modal). Escape or a second press closes it and returns focus to the button.
 - **Labels:** `<nav aria-label="Primary">`; the footer nav is `aria-label="Footer"`; the case study's on-page list is `aria-label="On this page"`.
 
 ### Skip link
@@ -436,7 +436,7 @@ Every component's accessible role, name and state is listed in the Accessibility
 - **Shape:** a group with the visible label "Inspect" (label type, text-secondary) followed by three joined toggle segments: **Design**, **Code**, **System**. Each segment is 44px tall, radius none on inner joins and sm on the outer corners, with a 1px border-strong outline. Each has a 16px drafting icon (grid square / angle brackets / three linked nodes) plus its text.
 - **States:** off is surface-1 with text-secondary text and a **hollow 8px square** indicator. On (`aria-pressed="true"`) is surface-3 with text color and a **filled 8px square** in design-accent, or security-accent for System. The filled/hollow square carries state without relying on color. Layers toggle independently, so several can be on at once.
 - **Show as list:** when any layer is on, a fourth button "Show values as list" appears after the group. It opens the Inspect legend (below), which is the readable version of everything the film draws.
-- **Placement:** on home, inline in the hero under the lead line. On every other page, and in the header on home once the hero scrolls away, there is a compact version (icons + text from md up, icons only below md with names kept as accessible names). Both instances share one state.
+- **Placement:** on home, inline in the hero under the lead line. On every other page, and in the header on home once the hero scrolls away, there is a compact version: in the header bar from lg (icons, with text labels from xl), and inside the Menu panel below lg. Names are kept as accessible names when hidden visually. Below md the full control stacks its "Inspect" label above the segments and drops the decorative icons so it fits 320px. Both instances share one state.
 - **Keyboard:** Tab reaches each segment. Space/Enter toggles. Escape turns every layer off and returns focus to the segment that last changed state.
 
 ### Project row (Selected work)
@@ -461,7 +461,7 @@ Projects are a **list of rows**, not a grid of same-size cards.
 - **On this page:** an inline `<nav aria-label="On this page">` list under the header that links to the six sections. Not sticky, since the margin belongs to Inspect.
 - **Sections, in order, each an `h2`:** Problem → Design decisions → How it's built → System architecture → Security → Outcome.
   - *Design decisions:* each decision is an `h3` with the decision, the alternative rejected and why. Screenshots go in frames with alt text.
-  - *How it's built:* prose plus a component/stack list. The Code layer shows the real snippets for this section.
+  - *How it's built:* prose plus a component/stack list, and at most two short code panels (≤ 12 lines each) of real code. The Code layer additionally shows the page's own source.
   - *System architecture:* one diagram (see Diagram style) with its text alternative.
   - *Security:* three `h3`s. **Threat model** is a table: asset, threat, likelihood, mitigation; it becomes stacked definition lists below md. **Protections** is a list where each item starts with a shield icon and the word "Protection". **Testing** describes the method, tools and findings. Security callouts use security-tint, a full 1px amber border, radius sm and a "Security note" text label. They never use a side stripe.
   - *Outcome:* results as a `<table>`: metric, before, after, how it was measured. Tabular numbers. Not the big-number hero-metric template. Placeholder numbers read "[Placeholder: metric]" until real.
@@ -484,14 +484,14 @@ Projects are a **list of rows**, not a grid of same-size cards.
 - **Hover:** the title gets an underline. Focus: the ring wraps the whole summary row.
 - Panels inside a list are independent. Opening one does not close others.
 
-### Code panel (Code layer only)
-- surface-2, 1px border, radius md. **Header row:** the real source path (`components/ProjectRow.tsx:12–24`) in mono-annotation text-muted, and a "Copy code" button (label type, 32px tall plus padding for a 44px target).
-- **Body:** mono-code, 16px padding, `pre-wrap` with a 2ch hanging indent. Line numbers in text-muted are `aria-hidden` and not copied. At most 12 lines; longer snippets are trimmed at a meaningful boundary with "Lines 12–24 of 88" shown.
+### Code panel (Code layer and case studies)
+- **Structure:** a `<figure role="region" aria-labelledby>` labeled by its caption. surface-2, 1px border, radius md. **Header row:** a `<figcaption>` with the source path or a short title (`components/ProjectRow.tsx:12–24`) in mono-annotation text-muted, and a "Copy code" button (label type, 44px target). The button's accessible name includes what it copies ("Copy code: ProjectRow.tsx"). After copying, a polite live region announces "Copied", and the button text reads "Copied" for 2 seconds.
+- **Body:** a `<pre>` in mono-code, 16px padding, `white-space: pre`. It scrolls horizontally **inside the panel only** (`overflow-x: auto`); the page never scrolls. When it overflows, it gets `tabindex="0"` so keyboard users can scroll it, with the standard focus ring. Line numbers in text-muted are `aria-hidden` and not copied. At most 12 lines; longer snippets are trimmed at a meaningful boundary with "Lines 12–24 of 88" shown.
 - **Highlighting,** within the two-signal palette: keywords and JSX tags in design-accent, strings in text, comments in text-muted, security-relevant tokens (header names, `nonce`, `integrity`) in security-accent. Everything else in text.
 - **Content is real:** snippets are read from the source files at build time, never retyped.
 
 ### Terminal
-- **Opening:** opens with the backquote key **`** when focus is not in a text field, `contenteditable` or the terminal itself, and no modifier is held. It also opens from the visible "Open terminal" button in the footer. Ctrl+K is deliberately not used, because it's taken by browser search in Chrome and Edge on Windows.
+- **Opening:** opens with the backquote key, detected by **physical key** (`event.code === "Backquote"`, never `event.key`), so it works on Hebrew, Arabic, Russian and other non-US layouts, where that key produces a different character. It is ignored when focus is in an `input`, `textarea`, `select` or `contenteditable` element, when the terminal is already open, during IME composition (`event.isComposing`), and when Ctrl, Alt or Meta is held. It also opens from the always-visible "Open terminal" button in the footer. Ctrl+K is deliberately not used, because it's taken by browser search in Chrome and Edge on Windows.
 - **Shortcut setting:** single-character shortcuts can be turned off (WCAG 2.1.4), via the footer button "Keyboard shortcut: on". It is a toggle with `aria-pressed`, saved in `localStorage`, and documented on `/accessibility`.
 - **Container:** a native `<dialog>` opened with `showModal()`. Width `min(720px, 100% − 32px)`, max height 70svh, anchored to the bottom center (bottom sheet below md), surface-1, border-strong, radius md, overlay shadow.
 - **Title bar:** "Terminal" (label type, sans) plus a 44×44 Close button. No traffic-light dots.
@@ -649,7 +649,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 | Project row | `article` | Title link text = project name | Tags as `ul aria-label="Tags"` |
 | Expandable panel | `details` / `summary` | Summary text | Native expanded/collapsed |
 | Diagram | `figure` > `svg role="img"` | `<title>` + `<desc>` | Text version in `details` |
-| Code panel | `figure` | `figcaption` = file path | "Copy code" button announces "Code copied" (polite) |
+| Code panel | `figure role="region"` | `figcaption` (file path or title) | Copy button named "Copy code: <file>"; polite live region announces "Copied"; scrollable `pre` is focusable |
 | Terminal | `dialog` (modal) | "Terminal" (`aria-labelledby` title) | Output `role="log" aria-live="polite"`; input labeled "Terminal command" |
 | Terminal opener | `button` | "Open terminal" | Returns focus here on close |
 | Shortcut toggle | `button` | "Keyboard shortcut for terminal" | `aria-pressed` |
@@ -695,7 +695,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 - **Don't** use stock photos. Use real screenshots or a hatched placeholder frame.
 - **Don't** add shader, WebGL, canvas-noise or animated backgrounds.
 - **Don't** use all-caps text, including eyebrow labels above headings. There are no eyebrows at all.
-- **Don't** use mono outside Inspect, the legend and the terminal.
+- **Don't** use mono outside Inspect, the legend, the terminal and code panels.
 - **Don't** use emoji, in content or as icons.
 - **Don't** append arrows (→, ↗, ›) to links. Only diagram edges have arrowheads.
 - **Don't** convey meaning with color alone.

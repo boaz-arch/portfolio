@@ -25,7 +25,8 @@ Every value shown in Inspect must be the real value used on the page, not decora
 - Background: deep slate, not pure black. Text: soft off-white.
 - Accents: blueprint blue for design/code annotations, amber for security notes. Nothing else colored.
 - Do NOT use the neon-green hacker look, purple gradients, glowing cards, stock photos, or shader/WebGL background effects.
-- Type: one clean sans for all content, one monospace used ONLY inside the Inspect layers and terminal.
+- Type: one clean sans for all content, one monospace used ONLY inside the Inspect layers, the terminal and code panels.
+- Code panels: case studies may include short, real code panels. Each is a labeled region, scrolls horizontally only inside the panel, and has a copy button with an accessible name and a "Copied" live announcement.
 - Left-aligned, 12-column grid, generous whitespace.
 - One signature motion moment: Inspect layers drawing themselves in. No fade-up on every section.
 
@@ -44,7 +45,7 @@ Every value shown in Inspect must be the real value used on the page, not decora
 
 ## Extras
 
-- Hidden terminal opened with a keyboard shortcut (e.g. `` ` `` or Ctrl+K). Commands: `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`.
+- Hidden terminal opened with the backquote key, detected by the physical key (`event.code === "Backquote"`, not `event.key`) so it works on Hebrew and other non-US layouts. Ignored while focus is in any input, textarea or contenteditable. A footer toggle turns the shortcut off, and a visible "Open terminal" button in the footer opens it without the keyboard. Commands: `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`.
 - Real security headers in production, shown in the System layer.
 - Fast: Lighthouse 95+ on performance, best practices and SEO; 100 on accessibility.
 
@@ -65,7 +66,8 @@ Target: **WCAG 2.2 Level AA**, which also satisfies Israeli Standard **IS 5568**
 - Everything usable with keyboard only: nav, filters, Inspect layers, theme toggle, expandable panels, terminal, case study navigation.
 - Logical tab order, no keyboard traps, Escape closes any overlay/terminal and returns focus to the trigger.
 - Visible focus indicator on every interactive element, at least 3:1 contrast, never hidden behind sticky headers.
-- Terminal shortcut must not hijack typing in inputs; document it and allow turning it off.
+- Terminal shortcut must not hijack typing in inputs (no trigger while focus is in an input, textarea or contenteditable); document it and allow turning it off.
+- Code panels that scroll horizontally are keyboard-focusable so they can be scrolled without a mouse.
 
 ### Visual
 
