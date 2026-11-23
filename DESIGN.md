@@ -351,7 +351,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 - All sizes are in `rem` so browser text zoom scales everything. All line heights are unitless so text-spacing overrides (line-height 1.5, paragraph spacing 2em, letter-spacing 0.12em, word-spacing 0.16em) reflow without clipping. Text containers never set a fixed `height`, and plates and chips use `min-height`.
 
 ### Named Rules
-**The Mono Boundary Rule.** Mono appears only inside the three Inspect layers, the Inspect legend, the terminal and code panels. Case studies may include code panels; prose never does. Inline technical terms in prose (`Content-Security-Policy`, `nginx`) use the sans on a surface-2 tint with radius xs.
+**The Mono Boundary Rule.** Mono appears only inside the three Inspect layers, the Inspect legend, the terminal, code panels, and commit hashes on About (they are code text). Case studies may include code panels; prose never does. Inline technical terms in prose (`Content-Security-Policy`, `nginx`) use the sans on a surface-2 tint with radius xs.
 
 **The Sentence Case Rule.** No all-caps text anywhere: no uppercase eyebrows, labels, buttons or nav. Text never carries a label above its heading.
 
@@ -543,7 +543,7 @@ Each subject is its own world inside one system. **Never changes between themes:
 - Theme tokens are CSS custom properties scoped by that attribute: `--accent`, `--accent-tint` (accent at 8–10% for fills behind accent text), `--motif` (the motif's line color), plus scoped state colors where a theme has them (`--signal-up`, `--severity`).
 - `--accent` is registered with `@property { syntax: "<color>"; inherits: true }`, so it can animate. During a page transition the old snapshot carries the old accent and the new snapshot the new one, so the accent crossfades as the user crosses into the new space; the nav indicator (its own transition group) shifts color while it slides. When `/work` changes filter in place, `--accent` transitions over 300ms ease-out (instant under reduced motion).
 - **Case studies take the theme of their primary tag** (the first tag in `content/site.ts`).
-- **`/work`** is The Sheet when unfiltered and takes the filtered discipline's theme when a filter is on (Design → Drafting table, Development → The editor, Systems → The network, Security → The vault).
+- **`/work`** follows the **lens**, not the filter: Overview is The Sheet; Design → Drafting table, Code → The editor, Systems → The network, Security → The vault. Filters only choose which projects are listed.
 
 ### Motif rules (all themes)
 - Decorative only: `aria-hidden`, CSS backgrounds or one static inline SVG, never an image file, never animated.
@@ -563,10 +563,53 @@ Each subject is its own world inside one system. **Never changes between themes:
 | **The editor** | Development: `/work` filtered to Development, case studies whose primary tag is Development | Cyan-teal `#4fc6bd` / `#0a7069` | Faint line numbers down the left page margin of long pages (md and up; the margin is too narrow below md) | Case study code panels show the real component, and a "View source" toggle (`aria-pressed`) on each section reveals the JSX behind the section you are reading, in a code panel under its heading | Lines in: the new content is revealed top to bottom in steps of one line height (`clip-path` with `steps()`), 360ms total. Whole lines, never characters: no typewriter |
 | **The network** | `/systems`, case studies whose primary tag is Systems | Steel blue-grey `#9db2c7` / `#45607a`. Signal green `#74c69d` / `#196b42` **only** for healthy / up states, always with a check icon and the word "Up" | A faint static topology map (nodes and links) in the outer margins | Interactive architecture diagram: each node is a focusable button; hover or focus highlights its links and shows a spec card (OS, role, ports). Optional slow packet along one route (6px square, 4s per pass), paused on hover and focus, with a visible "Pause animation" button (WCAG 2.2.2), removed under reduced motion | Connects in along the diagram lines: content reveals from the left edge (`clip-path: inset(0 100% 0 0) → inset(0)`), 380ms ease-out |
 | **The vault** | `/security`, case studies whose primary tag is Security | Amber `#e8ad4a` / `#8a5300`. Muted severity red `#ec8a83` / `#b02f27` **only** for Critical / High labels, always text + icon | Faint redaction bars in the outer margins, and a document-classification line at the top of the page ("Classification: Public · Portfolio record · Updated <date>") in small text-muted type | Write-ups start with key details redacted by solid bars. A "Declassify" button (`aria-pressed`) per write-up reveals them. The bars are `aria-hidden` overlays on the real text, so screen readers always get the full text. Severity: text + icon + color | Unlock: a single 1px accent scan line passes top to bottom while the content clips in behind it, 360ms ease-out |
-| **The workbench** | `/about` | Warm off-white `#e6dccb` / `#5f5140`, used as the highlight | None: the calmest page, so the person stands out | "How I work" is a horizontal sequence of the five steps. It fills step by step as the reader scrolls it into view or tabs through it: each reached step gets a filled square and the accent rule under it. This is the one scroll-linked element on the site, and it changes state rather than moving anything | The default directional slide |
-| **The handshake** | `/contact` | Blueprint blue `#78aef5` / `#1c5ac2` | None | The email and PGP fingerprint sit on a "key card": a surface-1 panel, 1px border-strong, radius md, fingerprint in grouped blocks. Copy buttons for both, each confirming with a polite "Copied" announcement | The default directional slide |
+| **The workbench** | `/about` | Warm off-white `#e6dccb` / `#5f5140`, used as the highlight | None: the calmest page, so the person stands out | "git log of me" (see below). Below it, "How I work" is a horizontal sequence of the five steps. It fills step by step as the reader scrolls it into view or tabs through it: each reached step gets a filled square and the accent rule under it. This is the one scroll-linked element on the site, and it changes state rather than moving anything | The default directional slide |
+| **The handshake** | `/contact` | Blueprint blue `#78aef5` / `#1c5ac2` | None | The three-step handshake form, beside a "key card" (see below) | The default directional slide |
 
 **How flavor and direction combine.** The exit is always the directional slide (old content leaves along the grid axis in nav order, 240ms), so pages still feel like neighbours on one sheet. The destination theme decides the enter. The project morph (`morph`, `morph-back`) overrides both, whatever the themes.
+
+### The workbench: git log of me
+
+`/about` reads as a commit history, newest first, in columns 1–8.
+- **HEAD** (first entry): a surface-1 panel, 1px border-strong, radius md. "HEAD → now" (label type) then what Boaz is doing now and what he is looking for (job, freelance, collaboration), as `h2` "Now" plus body text and a short list of what he's open to.
+- **Commits:** an `<ol>` (newest first). Each `<li>` has an `h3` containing a `<button aria-expanded aria-controls>`: short hash (mono, 7 characters, text-muted, tabular), date (`<time>`, small, text-muted), then the one-line message (title type). Hashes and dates are fixed in `content/site.ts`; they are labels, not real commits.
+- **Expanded commit:** the story (2–4 sentences, body), an optional photo (16:10 frame, radius md, alt text; placeholder frame until real), and the skills it added as diff lines in a list: each line is `+ Docker` in mono with a visually hidden "added" (`<span class="sr-only">added</span>`), and the accent on the "+". Expands with the panel height animation (200ms); under reduced motion instantly.
+- **Branch lines:** a decorative SVG (`aria-hidden`) in a 32px rail left of the list: a 1.5px border-strong line through square commit nodes (8px, accent fill for HEAD). Where the path forked, a branch leaves and rejoins as a merge; the merge commit's message says it in text ("Merge: design into development"). The rail is hidden below md (the list still reads in order).
+- **Diff: then ↔ now:** a toggle button (`aria-pressed`) above the log. When on, a comparison of `skillsThen` and `skillsNow`: two columns at md+ ("Then" / "Now", each an `h3` and a list), stacked below md. Lines only in Now are marked with "+" and sr-only "added"; lines only in Then with "−" and sr-only "removed"; shared lines are plain. A one-line summary sits above ("12 added, 2 removed").
+- **Below the log:** certifications, then "How I work" (the five-step sequence), then the toolbox, then the CV link.
+
+### Lenses (`/work`)
+
+- **Lens switch:** a native radio group (`fieldset` + `legend` "Lens", five `input type="radio"` styled as a segmented control: Overview, Design, Code, Systems, Security; 44px, radius sm outer corners, border-strong). Arrow keys move between options (native). Overview is the default and is the project row as designed. A filled square marks the selected segment (not color alone).
+- **Filters** stay as designed and are a separate control below the lens switch. One polite live region announces both: "Showing 3 of 5 projects tagged Security, Systems lens."
+- **Per-row lens content** replaces the row's frame area (columns 1–5 at lg; above the text below md):
+  - Design: the main screen or wireframe image (16:10, alt text; placeholder frame until real).
+  - Code: one short code panel (≤ 8 lines) or, if there is no snippet, the stack as a list.
+  - Systems: a mini architecture diagram (the content diagram style, vertical layout, title + text version).
+  - Security: "Threat model" (one line) and "Main protection" (one line, shield icon, amber accent), as a definition list.
+  - Missing: "Not part of this project" in small text-muted, keeping the frame's height so the list doesn't jump.
+- **Transition:** each row's lens area is its own `<ViewTransition>`; switching lens runs in a transition typed `lens`, so the areas crossfade (old out 150ms, new in 200ms from 80ms, ease-out; total ≤ 300ms) and rows that change height morph. The accent (`--accent`) shifts to the lens's theme over the same 300ms. Reduced motion: instant swap.
+- **URL:** the lens is mirrored to `?lens=design|code|systems|security` with `router.replace` (no history entry per click). The page is still prerendered: the server renders Overview; the client reads the parameter on hydration and applies it (lens controls are hidden without JavaScript, so a no-JS visitor sees Overview).
+- **Into the case study:** a row's link carries the lens (`/work/<slug>?lens=security`). The row still morphs into the case study header; when the morph finishes, the page scrolls to the matching section (Design → Design decisions, Code → How it's built, Systems → System architecture, Security → Security; smooth, or instant under reduced motion) and focus goes to that section's `h2` instead of the `h1`.
+
+### The handshake: contact form (`/contact`)
+
+Layout at lg: the form in columns 1–6, the key card in columns 7–8 plus the Inspect margin is untouched. Below lg: key card first (so the email is visible without scrolling past a form), then the form.
+
+- **Step indicator:** `<ol aria-label="Form steps">` with three items, each "1 ClientHello: Who are you", "2 Negotiate: What's this about", "3 Key exchange: Your message". The protocol word is small text-muted; the plain words carry the meaning. Current step: `aria-current="step"`, accent square filled; done steps get a check icon and sr-only "completed".
+- **Steps** (one `<form method="post" action="/api/contact">`; each step is a `fieldset` with a `legend`):
+  1. Name (`autocomplete="name"`, required, ≤ 100 characters), Email (`type="email"`, `autocomplete="email"`, required, ≤ 254).
+  2. Topic: four large radio cards (full-width rows, 56px, border-strong, radius sm; selected = 2px accent border + filled square + "Selected" sr-only): Job opportunity / Freelance project / Collaboration / Just saying hi.
+  3. Message: textarea, required, 20–5000 characters, with a live character count (polite, announced only near the limit).
+- **Navigation:** "Back" (secondary) and "Next: Negotiate" / "Next: Key exchange" / "Send message" (primary: surface text color on bg, per Buttons). Back keeps every value. Next validates the current step only.
+- **Errors:** under the field, small text in the text color with an error icon; the field gets a 2px border-strong outline. Never red alone. The message says how to fix it ("Enter an email address like name@example.com"). Linked via `aria-describedby`; `aria-invalid="true"`; focus moves to the first invalid field.
+- **Honeypot:** one extra text field ("Leave this field empty") positioned off-screen, `tabindex="-1"`, `autocomplete="off"`, inside an `aria-hidden` wrapper. Filled → the server answers 200 as if sent and discards it.
+- **Without JavaScript:** all three fieldsets show as one normal form (no step indicator, no Back/Next), posting to `/api/contact`; the route answers with a 303 redirect to `/contact/sent` or `/contact/error` (both static, `noindex`, with the email address on the error page).
+- **Success:** the form is replaced by a status panel (`role="status"`) with a small handshake diagram (client ↔ server, three arrows drawn in order: SYN-like "Hello", "Agreed", "Key exchanged", 150ms each, ease-plot) and the text "Connection established. Message received. I'll reply within 48 hours." Focus moves to the panel heading. Reduced motion: the diagram is static.
+- **Not configured** (no `RESEND_API_KEY` / `CONTACT_TO_EMAIL`): the server answers 503 `not_configured` and the form shows "The contact form isn't connected yet. Email me at <address>." with the address as a link. Other failures show a generic message plus the email address.
+- **Key card:** surface-1, 1px border-strong, radius md: the email as plain selectable text, PGP fingerprint in grouped 4-character blocks (tabular), then GitHub, LinkedIn, TryHackMe, HackTheBox. Each row has a copy button ("Copy email address", "Copy PGP fingerprint", "Copy GitHub URL"...) that announces "Copied" in a polite live region.
+
+**`/api/contact` (the only server code).** POST only; accepts JSON or form-encoded. zod schema with trimmed, length-limited fields and a fixed topic enum. Honeypot check. Rate limit: 5 requests per IP per 10 minutes, kept in memory (best effort: it resets per server instance; a shared store such as Upstash is the upgrade if abuse appears). Sends with a server-side `fetch` to the Resend API using `RESEND_API_KEY`, to `CONTACT_TO_EMAIL`, with the visitor's email as `reply_to` and the message as plain text only. Responses are JSON with generic messages (`{ ok: true }`, `{ error: "invalid", fields: [...] }`, `{ error: "rate_limited" }`, `{ error: "not_configured" }`, `{ error: "failed" }`); field errors name the field and the rule, never echo input. Logs record outcome and status only, never names, emails or bodies. CSP: unchanged (`connect-src 'self'` already covers `/api/contact`; Resend is called from the server).
 
 ### The vault: Break in to get my CV
 
@@ -892,7 +935,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 - Informative images have alt text that describes what they show. Decorative images use `alt=""`. Placeholder frames carry their visible "Placeholder" text.
 - Video, if any, has captions, never autoplays with sound, and has visible controls.
 
-### Forms (if a contact form is added)
+### Forms (the contact form; full spec under Section themes: The handshake)
 - Visible `<label>` above each field. Errors appear below the field in text with an icon, are tied by `aria-describedby`, and say how to fix it ("Enter an email address like name@example.com"). The form is checked on submit, not on each keypress. No CAPTCHA puzzles. Inputs are 44px tall with a border-strong edge, radius sm and a 16px font (prevents iOS zoom).
 
 ### Named Rules

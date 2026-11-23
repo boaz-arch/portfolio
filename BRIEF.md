@@ -37,13 +37,13 @@ Real routes, not one long page. Each page has its own `<title>`, one `<h1>` and 
 | Route | Content |
 |---|---|
 | `/` | Home: hero (name, one line "I design, build and secure digital products", Inspect control), short intro, 3 featured projects, links into each section |
-| `/work` | All projects (4–6), tagged Design / Development / Systems / Security, with filters |
+| `/work` | All projects (4–6), tagged Design / Development / Systems / Security, with discipline filters and lenses |
 | `/work/[slug]` | Case study, one per project in `content/site.ts`: problem → design decisions → how it's built → system architecture diagram → security (threat model, protections, testing) → outcome with numbers. Ends with Previous / Next project. |
 | `/security` | Security work: CTFs, lab write-ups, research, certs. Expandable summaries. |
 | `/systems` | Systems & infrastructure overview: the whole stack as a vertical depth gauge with an "Enter" button (see Descend the stack) |
 | `/systems/internet`, `/systems/edge`, `/systems/network`, `/systems/host`, `/systems/containers`, `/systems/os` | The six stack levels, one route each |
-| `/about` | About (short bio, photo, certifications, what I'm looking for), How I work (research → design → build → secure → test, a real sequence, so numbering is OK here), Toolbox (grouped by area, no logo walls) |
-| `/contact` | Email as plain text, GitHub, LinkedIn, TryHackMe/HackTheBox, optional PGP key |
+| `/about` | "git log of me" (HEAD = now and what I'm looking for, commits as milestones, diff then ↔ now, certifications), How I work (research → design → build → secure → test, a real sequence, so numbering is OK here), Toolbox (grouped by area, no logo walls) |
+| `/contact` | The handshake form plus a key card: email as plain text, PGP fingerprint, GitHub, LinkedIn, TryHackMe/HackTheBox |
 | `/accessibility` | Accessibility statement, linked from the footer on every page |
 
 ## Section themes
@@ -65,6 +65,49 @@ Rules for all themes:
 - Themes apply through CSS custom properties scoped by a `data-section` attribute, so a page transition can crossfade the accent from one theme to the next. When moving between sections, the accent shifts during the transition.
 - Case studies take the theme of their primary tag.
 - No theme may break the don't list (no neon-green hacker look, no glow, no gradients, no stock photos, no shader effects).
+
+## About: "git log of me" (Workbench theme)
+
+- The page reads as a commit history, newest first. The top entry is HEAD: what I'm doing now and what I'm looking for (job, freelance, collaboration).
+- Each milestone is a commit: short hash, date, one-line message (e.g. "a3f9c21  First homelab: old laptop running Ubuntu Server").
+- Selecting a commit expands it (button with `aria-expanded`) to show a short story (2–4 sentences), an optional photo with alt text, and the skills it added as diff lines ("+ Docker"). Added lines use a text "+" and the word "added" for screen readers, not color alone.
+- A "Diff: then ↔ now" toggle shows skills as a before/after comparison: two columns on desktop, stacked on mobile, changed lines marked.
+- Branch lines on the left connect the commits (decorative SVG, `aria-hidden`). Where the path forked (design → development → security), the history shows a merge, labeled in text.
+- "How I work" and the toolbox stay on this page, below the log.
+- Content: `aboutLog: { hash, date, message, story, photo?, alt?, added[] }[]`, plus `head` and `skillsThen[]` / `skillsNow[]` in `content/site.ts`. Placeholders marked [PLACEHOLDER].
+- A real `<ol>` of commits, each with a heading. Hashes in mono (allowed as code text). Reduced motion: commits expand instantly.
+
+## Work: "Lenses" (`/work`)
+
+- Project rows as designed, plus a lens switch at the top: Design / Code / Systems / Security, as a radio group or toggle buttons with `aria-pressed`, keyboard operable.
+- Switching lens re-renders every row to show that side of the project: Design → main screen or wireframe image (with alt text); Code → one key snippet (short code panel) or the stack; Systems → a mini architecture diagram (SVG, title + text alternative); Security → the threat model in one line + the main protection.
+- Rows crossfade and morph between lenses (view transitions, ≤350ms); the page accent shifts to that lens's section theme. Reduced motion: instant swap.
+- Lenses work alongside the discipline filters: filters choose which projects, lenses choose what you see of them. The result count is announced via `aria-live`.
+- The chosen lens is in the URL (`?lens=security`), so it is shareable, and carries into the case study: the case study opens at the matching section.
+- A project with no content for a lens shows "Not part of this project" in muted text instead of hiding, so the list doesn't jump.
+- Content: each project gets `lenses: { design?, code?, systems?, security? }`.
+- Clicking a row keeps the existing morph into the case study.
+
+## Contact: "The handshake" (`/contact`)
+
+- A three-step form styled as a TLS handshake, with a step indicator labeled in plain words:
+  1. ClientHello: "Who are you" (name, email).
+  2. Negotiate: "What's this about" (large radio buttons: Job opportunity / Freelance project / Collaboration / Just saying hi).
+  3. Key exchange: "Your message" (textarea).
+- On success, a short handshake diagram completes (client ↔ server arrows) and shows: "Connection established. Message received. I'll reply within 48 hours." No emoji. Reduced motion: static diagram and message.
+- Next to the form, a "key card": email as plain text (always visible, selectable), PGP fingerprint, GitHub, LinkedIn, TryHackMe/HackTheBox, each with a copy button that announces "Copied" via `aria-live`.
+
+Form behavior and accessibility:
+- The steps are progressive enhancement. Without JavaScript it is one normal form with all three fields.
+- Each step validates before moving on. Errors appear next to the field, linked with `aria-describedby`, and say how to fix the problem. Focus moves to the first error. Nothing is lost when going back a step.
+- Back/Next buttons; the step indicator is a labeled list with `aria-current="step"`. No CAPTCHA.
+
+Sending (secure by design):
+- A Next.js route handler at `/api/contact`: validates and length-limits every field server-side (zod), rejects submissions with the hidden honeypot field filled, and applies a simple per-IP rate limit.
+- Sends through a provider configured by environment variables (`RESEND_API_KEY`, `CONTACT_TO_EMAIL`), never hard-coded. A `.env.example` lists those names with empty values.
+- If the env vars aren't set, the form shows a clear message with the email address instead of failing silently.
+- Never reflects user input as HTML; returns generic error messages; logs no message bodies.
+- CSP `connect-src` changes only if needed.
 
 ## Break in to get my CV (Security)
 
@@ -243,4 +286,4 @@ Use clearly marked placeholders. Keep ALL content (name, bio, projects, links, c
 
 ## Tech
 
-Next.js (App Router) + TypeScript + Tailwind. Static where possible. The folder already has `package.json`, `.claude/`, `.agents/` and `.impeccable/`: set Next.js up inside this existing folder later and never delete those.
+Next.js (App Router) + TypeScript + Tailwind. Static where possible: every page is prerendered; the only server code is the `/api/contact` route handler. Because of that route (and because security headers come from `next.config` `headers()`, which a static export ignores), the site deploys to a host that runs Next.js server functions (for example Vercel), not to plain static file hosting. The folder already has `package.json`, `.claude/`, `.agents/` and `.impeccable/`: set Next.js up inside this existing folder later and never delete those.
