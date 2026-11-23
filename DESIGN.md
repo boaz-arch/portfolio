@@ -219,11 +219,11 @@ The empty space has a job. At ≥1024px, columns 9–12 of each content section 
 
 **Key Characteristics:**
 - Deep slate in both directions: dark by default, cool paper in light mode. No pure black, no pure white page.
-- Two accents with fixed meanings: blueprint blue means design or code, amber means security. Nothing else is colored.
+- One accent per world. Each section has its own theme (see Section themes): one accent, one faint motif, one signature interaction, one transition flavor. Fonts, grid, header and spacing never change. The Inspect film keeps its own fixed colors on every page: blueprint blue for design and code, amber for security.
 - One sans for all content. Mono only inside Inspect, the terminal and code panels.
 - Depth from surface steps and 1px borders. A shadow only on floating layers.
 - Square drafting geometry for Inspect, small 2–6px radii for the interface, nothing fully rounded.
-- One signature motion: the film drawing itself in.
+- A two-part motion system: connected page transitions (the site is one continuous sheet) and the film drawing itself in. Everything else stays still.
 
 ## Colors
 
@@ -311,7 +311,7 @@ All ratios are WCAG 2.x relative-luminance contrast, computed from the hex value
 **`forced-colors: active`:** all accents map to system colors: lines `CanvasText`, plates `Highlight` / `HighlightText`, focus `Highlight`. SVG strokes use `currentColor` so they follow. Meaning survives because no state depends on color alone (see Accessibility).
 
 ### Named Rules
-**The Two Signals Rule.** Blue always means design or code. Amber always means security. No third color is ever added, and neither accent is used just to make something pretty: no blue buttons, no amber hovers, no accent-colored headings.
+**The One Accent Rule.** A page has exactly one accent: its section theme's `--accent`. Two scoped exceptions carry state, not decoration: signal green means "healthy / up" (Systems only) and severity red means "critical / high" (Security only), each always paired with text and an icon. The Inspect film is the tool laid over every world and always uses blueprint blue (design, code) and amber (security). No accent is used just to make something pretty: no accent-filled buttons, no accent-colored headings, no accent hovers on large areas.
 
 **The No-Fake-Contrast Rule.** Any ratio not in the table above must be computed before it ships. Translucent overlays don't count as a background. Measure against the solid surface underneath.
 
@@ -419,7 +419,10 @@ Every component's accessible role, name and state is listed in the Accessibility
 
 ### Header and nav
 - **Structure:** `<header>` sticky at the top, 64px tall, solid bg, a hairline `border` bottom only after scrolling 8px. It holds a wordmark link (the name in subtitle type, links home), the primary nav, the theme toggle, and (on pages other than home, or on home once the hero is out of view) the compact Inspect control.
-- **Nav links:** Work, Security, Systems, About, Contact. On home they jump to sections, on other pages they go to `/#section`. Label type, text-secondary, 44px tall hit area. Hover: text color plus an underline drawn left to right (`text-decoration-thickness: 1px; text-underline-offset: 6px`). Current section/page: text color, persistent underline and `aria-current`.
+- **Nav links:** Work (`/work`), Security (`/security`), Systems (`/systems`), About (`/about`), Contact (`/contact`). These are real routes, in this order; the order also sets the direction of section transitions. Label type, text-secondary, 44px tall hit area. Hover: text color. Current page: text color and `aria-current="page"` (a case study marks Work as current with `aria-current="true"`).
+- **Active indicator:** a single 2px bar in text color under the current link (not accent: the Two Signals Rule). It has its own `view-transition-name: nav-indicator`, so on navigation it slides and resizes to the new link instead of disappearing and reappearing. On Home and `/accessibility` no link is current and there is no bar.
+- **Header persistence:** the header has `view-transition-name: site-header` with no animation, so it, the compact Inspect control and the theme toggle never re-animate between pages.
+- **Without JavaScript:** the Menu button is hidden and the mobile nav list is shown open below the header, so every route stays reachable.
 - **Below lg (1024px):** the links collapse behind a `Menu` button (five links, the Inspect mirror and the theme toggle do not fit one row below 1024px) that opens a panel directly below the header (not full screen, not a modal). Escape or a second press closes it and returns focus to the button.
 - **Labels:** `<nav aria-label="Primary">`; the footer nav is `aria-label="Footer"`; the case study's on-page list is `aria-label="On this page"`.
 
@@ -439,10 +442,15 @@ Every component's accessible role, name and state is listed in the Accessibility
 - **Placement:** on home, inline in the hero under the lead line. On every other page, and in the header on home once the hero scrolls away, there is a compact version: in the header bar from lg (icons, with text labels from xl), and inside the Menu panel below lg. Names are kept as accessible names when hidden visually. Below md the full control stacks its "Inspect" label above the segments and drops the decorative icons so it fits 320px. Both instances share one state.
 - **Keyboard:** Tab reaches each segment. Space/Enter toggles. Escape turns every layer off and returns focus to the segment that last changed state.
 
+### Home
+- Hero (name as `h1` in display type, the one line, the full Inspect control), then a short intro paragraph (lead type, columns 1–8), then **Featured work**: 3 project rows in the same row component as `/work`, then **Explore**: a plain list of links into each section page, each with a one-line description. No cards, no icon-plus-heading grid.
+
 ### Project row (Selected work)
 Projects are a **list of rows**, not a grid of same-size cards.
 - Each row is an `<article>` in an `<ul>`, 32px vertical padding, separated by a hairline border. At lg: a screenshot frame in columns 1–5 (16:10, radius md, 1px border) and text in columns 6–8 when Inspect is off. Below md, it stacks: frame, then text.
+- **Number:** each project has a fixed two-digit number from its order in `content/site.ts` ("01"–"06"), in title type, tabular, text-muted, before the title. It is the project's place in the sequence that Previous / Next walks through, so the number carries information (an allowed exception to "no numbering"). Screen readers hear "Project 1".
 - **Text:** title (`h3`, title type) as the only link, stretched over the row with `::after` so the whole row is clickable, followed by a one-line summary (body, text-secondary), then the tag list, then role and year (small, text-muted).
+- **Shared names (morph):** the row is `project-<slug>`, its number `project-num-<slug>`, its title `project-title-<slug>` and its tag list `project-tags-<slug>`. The case study header carries the same names, so the row morphs into the header. React's `<ViewTransition name>` applies the names only during a transition, so a name never exists twice on one page.
 - **Placeholder frames:** until real screenshots exist, the frame shows a 45° hatch pattern in border color with "Placeholder: project screenshot" in small text-muted. Never a stock image.
 - **Hover/focus:** row fill goes to surface-1, the frame edge to border-strong, and the title's underline draws in (120ms). No lift, no scale, no shadow.
 
@@ -465,7 +473,9 @@ Projects are a **list of rows**, not a grid of same-size cards.
   - *System architecture:* one diagram (see Diagram style) with its text alternative.
   - *Security:* three `h3`s. **Threat model** is a table: asset, threat, likelihood, mitigation; it becomes stacked definition lists below md. **Protections** is a list where each item starts with a shield icon and the word "Protection". **Testing** describes the method, tools and findings. Security callouts use security-tint, a full 1px amber border, radius sm and a "Security note" text label. They never use a side stripe.
   - *Outcome:* results as a `<table>`: metric, before, after, how it was measured. Tabular numbers. Not the big-number hero-metric template. Placeholder numbers read "[Placeholder: metric]" until real.
-- **Between studies:** at the end, "Previous case study: *name*" and "Next case study: *name*" links, full names, no arrow glyphs.
+- **Header names:** the case study header is `project-<slug>`; inside it the number (`project-num-<slug>`), `h1` (`project-title-<slug>`) and tags (`project-tags-<slug>`) carry the matching names from the project row.
+- **Previous / Next project:** at the end, a `nav aria-label="Projects"` with two compact project rows (number, title, tags), linked as "Previous project: *name*" and "Next project: *name*". They wrap around (the last project's Next is the first). They carry the target project's shared names, so following them uses the same morph. No arrow glyphs.
+- **Every project has a case study page.** Projects without written content render the template with visibly marked placeholders.
 
 ### Diagram style (content diagrams)
 - Used for system architecture, homelab/network diagrams and the System layer.
@@ -524,9 +534,68 @@ Projects are a **list of rows**, not a grid of same-size cards.
   - Last updated (`<time>`).
 - Same tokens, no Inspect margin columns needed. Inspect still works on this page.
 
+## Section themes
+
+Each subject is its own world inside one system. **Never changes between themes:** fonts, the 12-column grid, the header, the spacing scale, radii, type scale, surface and text colors, focus ring, the Inspect film. **Each theme changes only four things:** its accent color, a faint background motif, one signature interactive element, and the flavor of its page transition.
+
+### Mechanism
+- Each page's content wrapper carries `data-section="home | design | development | systems | security | about | contact"`, server-rendered, so themes work without JavaScript. The root layout mirrors the current section onto `<html data-section>` on navigation, so the header (nav indicator) can use it too.
+- Theme tokens are CSS custom properties scoped by that attribute: `--accent`, `--accent-tint` (accent at 8–10% for fills behind accent text), `--motif` (the motif's line color), plus scoped state colors where a theme has them (`--signal-up`, `--severity`).
+- `--accent` is registered with `@property { syntax: "<color>"; inherits: true }`, so it can animate. During a page transition the old snapshot carries the old accent and the new snapshot the new one, so the accent crossfades as the user crosses into the new space; the nav indicator (its own transition group) shifts color while it slides. When `/work` changes filter in place, `--accent` transitions over 300ms ease-out (instant under reduced motion).
+- **Case studies take the theme of their primary tag** (the first tag in `content/site.ts`).
+- **`/work`** is The Sheet when unfiltered and takes the filtered discipline's theme when a filter is on (Design → Drafting table, Development → The editor, Systems → The network, Security → The vault).
+
+### Motif rules (all themes)
+- Decorative only: `aria-hidden`, CSS backgrounds or one static inline SVG, never an image file, never animated.
+- Low contrast: motif lines use `--motif`, at most 1.3:1 against the page background, and fade to nothing behind the reading column (columns 1–8) wherever body text sits, via a mask that keeps them in the outer margins and empty space.
+- Removed entirely under `prefers-contrast: more` and `forced-colors: active`.
+
+### Signature rules (all themes)
+- Works with keyboard alone, has a visible focus state (the standard ring), and has a reduced-motion version that shows the same information without animation.
+- Never the only way to reach information: everything it reveals is also available as text.
+
+### The themes
+
+| Theme | Where | Accent (dark / light) | Motif | Signature | Transition flavor (enter) |
+|---|---|---|---|---|---|
+| **The Sheet** | `/`, `/work` unfiltered, `/accessibility` | Neutral: `#e7eaef` / `#121821` (the text color) | None | Section links preview where they lead: each link has a 12px square in that section's accent before its label | The default directional slide |
+| **Drafting table** | Design work: `/work` filtered to Design, case studies whose primary tag is Design | Blueprint blue `#78aef5` / `#1c5ac2` | Faint fine grid like cutting-mat graph paper: 8px minor lines, 40px major lines, `--motif` | Hovering or focusing a project row draws its measurement redlines: the Design layer scoped to that row only (outline, size plate, padding dimensions) | Content drops into registration: `translate(−6px, −6px) → 0`, opacity 0 → 1, 320ms ease-out, while four 12px registration crosshairs at the content corners fade in and out (decoration) |
+| **The editor** | Development: `/work` filtered to Development, case studies whose primary tag is Development | Cyan-teal `#4fc6bd` / `#0a7069` | Faint line numbers down the left page margin of long pages (md and up; the margin is too narrow below md) | Case study code panels show the real component, and a "View source" toggle (`aria-pressed`) on each section reveals the JSX behind the section you are reading, in a code panel under its heading | Lines in: the new content is revealed top to bottom in steps of one line height (`clip-path` with `steps()`), 360ms total. Whole lines, never characters: no typewriter |
+| **The network** | `/systems`, case studies whose primary tag is Systems | Steel blue-grey `#9db2c7` / `#45607a`. Signal green `#74c69d` / `#196b42` **only** for healthy / up states, always with a check icon and the word "Up" | A faint static topology map (nodes and links) in the outer margins | Interactive architecture diagram: each node is a focusable button; hover or focus highlights its links and shows a spec card (OS, role, ports). Optional slow packet along one route (6px square, 4s per pass), paused on hover and focus, with a visible "Pause animation" button (WCAG 2.2.2), removed under reduced motion | Connects in along the diagram lines: content reveals from the left edge (`clip-path: inset(0 100% 0 0) → inset(0)`), 380ms ease-out |
+| **The vault** | `/security`, case studies whose primary tag is Security | Amber `#e8ad4a` / `#8a5300`. Muted severity red `#ec8a83` / `#b02f27` **only** for Critical / High labels, always text + icon | Faint redaction bars in the outer margins, and a document-classification line at the top of the page ("Classification: Public · Portfolio record · Updated <date>") in small text-muted type | Write-ups start with key details redacted by solid bars. A "Declassify" button (`aria-pressed`) per write-up reveals them. The bars are `aria-hidden` overlays on the real text, so screen readers always get the full text. Severity: text + icon + color | Unlock: a single 1px accent scan line passes top to bottom while the content clips in behind it, 360ms ease-out |
+| **The workbench** | `/about` | Warm off-white `#e6dccb` / `#5f5140`, used as the highlight | None: the calmest page, so the person stands out | "How I work" is a horizontal sequence of the five steps. It fills step by step as the reader scrolls it into view or tabs through it: each reached step gets a filled square and the accent rule under it. This is the one scroll-linked element on the site, and it changes state rather than moving anything | The default directional slide |
+| **The handshake** | `/contact` | Blueprint blue `#78aef5` / `#1c5ac2` | None | The email and PGP fingerprint sit on a "key card": a surface-1 panel, 1px border-strong, radius md, fingerprint in grouped blocks. Copy buttons for both, each confirming with a polite "Copied" announcement | The default directional slide |
+
+**How flavor and direction combine.** The exit is always the directional slide (old content leaves along the grid axis in nav order, 240ms), so pages still feel like neighbours on one sheet. The destination theme decides the enter. The project morph (`morph`, `morph-back`) overrides both, whatever the themes.
+
+### Theme contrast table
+
+WCAG 2.x contrast of each accent against every surface. Requirements: text 4.5:1, UI and graphics 3:1. Every accent passes as text on every surface in both themes.
+
+| Accent | Dark: bg / s1 / s2 / s3 | Min | Light: bg / s1 / s2 / s3 | Min |
+|---|---|---|---|---|
+| Neutral (The Sheet) | 15.33 / 14.34 / 13.26 / 11.97 | 11.97 | 16.45 / 17.82 / 15.45 / 14.23 | 14.23 |
+| Blueprint blue (Drafting table, Handshake) | 8.07 / 7.55 / 6.98 / 6.31 | 6.31 | 5.89 / 6.38 / 5.53 / 5.09 | 5.09 |
+| Cyan-teal (The editor) | 8.93 / 8.36 / 7.72 / 6.98 | 6.98 | 5.48 / 5.94 / 5.15 / 4.74 | 4.74 |
+| Steel (The network) | 8.47 / 7.93 / 7.33 / 6.62 | 6.62 | 6.04 / 6.55 / 5.68 / 5.23 | 5.23 |
+| Signal green (Systems, "Up" only) | 9.07 / 8.49 / 7.85 / 7.09 | 7.09 | 6.01 / 6.52 / 5.65 / 5.20 | 5.20 |
+| Amber (The vault) | 9.25 / 8.65 / 8.00 / 7.22 | 7.22 | 5.84 / 6.33 / 5.49 / 5.05 | 5.05 |
+| Severity red (Security, Critical / High only) | 7.51 / 7.03 / 6.49 / 5.86 | 5.86 | 5.91 / 6.40 / 5.55 / 5.11 | 5.11 |
+| Warm (The workbench) | 13.61 / 12.74 / 11.78 / 10.63 | 10.63 | 7.08 / 7.67 / 6.65 / 6.12 | 6.12 |
+
+Light-mode signal green was first drafted as `#1f7a4c`, which fails on surface-3 (4.25:1). It is `#196b42` instead.
+
+### Section-theme don'ts
+- No theme may break the global Do's and Don'ts: no neon-green hacker look (signal green is soft, scoped to "Up", and never a background or glow), no glow, no gradients, no stock photos, no shader or animated backgrounds.
+- No theme changes fonts, grid, header, spacing, radii, surfaces or text colors.
+- No motif behind body text at readable strength; no motif under `prefers-contrast: more` or forced colors.
+- No color-only meaning: severity, "Up", redaction and filled steps always have text or an icon too.
+
 ## Inspect overlay spec
 
 General rules for all three layers:
+- **Persistence:** which layers are on survives navigation (the state lives in the root layout) and reloads within the tab (`sessionStorage`). A layer restored after navigation is drawn in its final state, without the draw-in.
+- **The grid is the sheet:** the Design layer's 12 columns are a fixed, viewport-sized layer with `view-transition-name: film-grid` and no transition animation, so the lines stay exactly in place while pages slide or morph underneath. Outlines, dimensions and plates belong to the page: they are cleared before a navigation is captured and redrawn on the new page.
 - The film is one `<div aria-hidden="true">` positioned over `main`, `pointer-events: none`, rendered only while at least one layer is on. When off it doesn't exist in the DOM, so screen readers hear nothing.
 - Values come from `getComputedStyle` on the live elements, mapped back to token names through a build-time token map, for example `space-8 · 32px`, `headline · 36/41 · 600`. If a computed value has no matching token, the plate says so ("32px · no token") rather than hiding the mismatch.
 - The film redraws on resize and theme change (debounced 150ms) and covers the full page height. Elements outside the viewport are drawn in their final state.
@@ -563,7 +632,50 @@ General rules for all three layers:
 
 ## Motion
 
-Calm everywhere, with **one authored moment: the film drawing itself in.** Nothing on the page animates because the page scrolled.
+A motion system with **two parts**: (1) connected page transitions, which make the site one continuous sheet, and (2) the film drawing itself in. Everything else stays still. Nothing animates because the page scrolled.
+
+### Page transitions
+
+Built on the View Transitions API through React's `<ViewTransition>` (stable in Next.js 16.4 / React 19.3, so no experimental flag exists or is needed). `<Link transitionTypes>` tags each navigation with its type. Rules:
+- 250–450ms, `ease-out`, transform and opacity only on page content. The browser's shared-element group animation also interpolates the snapshot box size; that happens in the transition overlay, not in the document, so nothing re-lays out.
+- Never block clicks: `::view-transition { pointer-events: none }`, so input goes to the new page underneath. A new navigation skips the running transition.
+- Root (`::view-transition-old/new(root)`) has no animation. The header (`site-header`) and the fixed Design-layer grid (`film-grid`) have no animation either, so they stay put.
+- Browsers without View Transitions navigate instantly. Nothing waits for an animation to finish.
+
+The navigation type decides the animation:
+
+| Type | When | Result |
+|---|---|---|
+| `nav-forward` | Target is to the right in nav order (Home < Work < Security < Systems < About < Contact < Accessibility) | Content slides left |
+| `nav-back` | Target is to the left in nav order | Content slides right |
+| `morph` | A project row, a featured project, or Previous / Next opens a case study | Row morphs into the header |
+| `morph-back` | A case study goes back to the list or Home | Header morphs back into the row |
+
+Back and Forward buttons get their type from the same nav-order comparison, so the motion always matches the direction of travel.
+
+**Section → section** (`nav-forward`; `nav-back` mirrors the x values)
+
+| Element | Role | Starts | Duration | Motion | Relationship |
+|---|---|---|---|---|---|
+| New page content | Lead | 0ms | 360ms | `translateX(48px → 0)`, opacity 0 → 1 | — |
+| Old page content | Support | 0ms | 240ms | `translateX(0 → −48px)`, opacity 1 → 0 | Together with new (crossfade; the exit is shorter) |
+| Nav indicator | Support | 0ms | 300ms | Slides and resizes to the new link | Together |
+| Header, Inspect control, grid | Static | — | — | — | Stay fixed |
+
+48px is two gutters: enough to read as a sideways step along the sheet, small enough to stay calm.
+
+**Project → case study** (`morph`)
+
+| Element | Role | Starts | Duration | Motion | Relationship |
+|---|---|---|---|---|---|
+| Row → case header (`project-<slug>`) | Lead | 0ms | 420ms | Moves and grows from the row's box to the header's box; old snapshot fades out over the first 200ms, new fades in from 80ms to 320ms | — |
+| Number, title, tags | Lead (parts) | 0ms | 420ms | Each morphs to its place in the header | Together with the row |
+| Rest of the list (old page) | Decoration | 0ms | 250ms | Opacity 1 → 0, `translateY(0 → 24px)`: falls away | Together |
+| Rest of the case study (new page) | Support | 160ms | 280ms | Opacity 0 → 1 | Overlaps: starts as the header lands |
+
+`morph-back` is the exact reverse: the header shrinks back into its row, the case study fades out over 250ms, and the list rises back in (`translateY(24px → 0)`, opacity 0 → 1, 280ms from 160ms).
+
+**What doesn't move:** the header and Inspect control (persistent chrome); the grid lines (they are the sheet); headings inside the new page (one entrance per container: the page carries them); the footer (part of the page snapshot).
 
 ### Tokens
 
@@ -616,6 +728,10 @@ Every animation has a reduced form, and every reduced form is the instant end st
 | Chevron rotate / panel height | Instant |
 | Menu panel / terminal open and close | Instant |
 | Smooth scrolling to anchors | `scroll-behavior: auto` |
+| Page slide (section → section) | Instant page swap |
+| Project morph and its reverse | Instant page swap |
+| Nav indicator slide | Moves instantly |
+| Theme crossfade | Instant |
 
 ## Accessibility
 
@@ -656,6 +772,12 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 | Copy email | `button` | "Copy email address" | "Email copied" (polite) |
 | Case study pager | `nav` | "Case studies" | Links named "Previous case study: X" |
 
+### Navigation
+- After every route change, focus moves to the new page's `h1` (`tabindex="-1"`, `focus({ preventScroll: true })`), and a polite live region announces the new page title.
+- New pages scroll to the top; Back and Forward restore the previous scroll position (Next.js router behaviour, kept).
+- Back/Forward and direct URL loads all work. Every page is server-rendered and works with JavaScript off. Controls that need JavaScript (Inspect, theme toggle, Menu button, filters, copy buttons, terminal buttons) are hidden until JavaScript runs: the inline head script adds `class="js"` to `<html>` before first paint, so there is no layout shift.
+- The skip link is the first focusable element on every page.
+
 ### Structure
 - `<html lang="en">`. One `h1` per page, with no skipped heading levels. Landmarks: `header`, `nav` (labeled when more than one), `main`, `footer`; sheets as labeled `aside`.
 - Each page has a unique title: "Boaz King: Designs, builds and secures digital products" (home), "*Project name*: case study · Boaz King", "Accessibility statement · Boaz King".
@@ -680,7 +802,7 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 ## Do's and Don'ts
 
 ### Do:
-- **Do** use only the role tokens in this file. Any new color is computed against every surface and added to the contrast table before use.
+- **Do** use only the role tokens in this file, and for accents only the scoped `--accent` of the current section theme. Any new color is computed against every surface and added to a contrast table before use.
 - **Do** keep running text in columns 1–8 at lg+, and keep the margin free for the film.
 - **Do** generate every Inspect value from the live page and source. A plate that doesn't match the page is a bug.
 - **Do** mark every placeholder visibly ("Placeholder: …"), with content in `content/site.ts`.
@@ -702,6 +824,6 @@ Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appea
 - **Don't** use fully rounded buttons, pills or circular icon buttons.
 - **Don't** build grids of same-size icon + heading + text cards, nest cards, or put side stripes (a colored bar down one edge) on any box.
 - **Don't** fade sections up on scroll, add parallax or scroll-jack. The draw-in is the only authored motion.
-- **Don't** number sections. The one exception is How I work (research → design → build → secure → test), where order is the content.
+- **Don't** number sections. The exceptions are How I work (research → design → build → secure → test) and project numbers (the order Previous / Next walks), where the number carries information.
 - **Don't** use logo walls in the Toolbox. Tools are grouped text lists.
 - **Don't** let the brand show through Linear's or Vercel's clothes: no lavender accent, black pill CTAs, Geist, mesh hero or near-black `#010102` ground.
