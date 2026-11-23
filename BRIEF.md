@@ -66,6 +66,44 @@ Rules for all themes:
 - Case studies take the theme of their primary tag.
 - No theme may break the don't list (no neon-green hacker look, no glow, no gradients, no stock photos, no shader effects).
 
+## Break in to get my CV (Security)
+
+A guided, fully simulated, client-side challenge on `/security`. No real vulnerabilities, nothing executes, no real credentials anywhere.
+
+The frame:
+- `/security` opens with a "Target brief" (classified-document style): "Objective: retrieve the file cv.pdf from this site. Authorized engagement. Simulated environment." A "Start engagement" button begins it.
+- A mission tracker (fixed panel, collapsible) shows the stages as locked, current or done. Progress is saved in `sessionStorage`.
+- An elapsed-time counter that stops at the end ("Time to root: 06:42"). Opt-in, hidden by default, does not run unless turned on.
+
+The stages (each teaches one real technique and has 3 progressive hints: nudge → direction → answer):
+1. **Recon:** "Look where developers leave notes." The flag is in an HTML comment in the page source. Found via View Source / DevTools Elements, or via the site's Inspect → Code layer, which shows the comment while this stage is active (so mobile users can play).
+2. **Enumeration:** "Every site tells crawlers where not to look." The comment points to `/robots.txt`, which disallows a hidden path (`/ops-7f3a`). That page is a fake "internal ops" login screen.
+3. **Traffic:** "Watch what the server whispers." Responses on `/ops-7f3a` carry a custom header `X-Ops-Hint` with a base64 string, visible in DevTools Network or in the site's Inspect → System layer, which lists the real response headers.
+4. **Decode:** "It's not encrypted, it's encoded." Decoding the base64 (the terminal's `decode` command, or any tool) gives a username and a passphrase hint.
+5. **Access:** in the site terminal (backquote or the footer "Open terminal" button): `ls`, `cat notes.txt`, `whoami`, `ssh boaz@ops`, which prompts for the passphrase. The correct passphrase grants a shell.
+6. **Privilege escalation:** `sudo -l` reveals one allowed command; using it reads `/root/cv.pdf`. The terminal plays a short "ACCESS GRANTED" sequence, then the CV opens/downloads (static file at `/files/cv.pdf`), a completion card shows time, hints used and "What you just did" (one plain line per stage naming the real technique: source review, robots.txt enumeration, header inspection, base64 decoding, credential reuse, sudo misconfiguration, and how I defend against each), and a "Contact me" button.
+
+Also: `/.well-known/security.txt` as a real, valid file (RFC 9116), with a hidden comment line referencing the challenge as an easter egg.
+
+Terminal additions: `help`, `ls`, `cat`, `cd`, `pwd`, `whoami`, `decode <base64>`, `ssh`, `sudo -l`, `sudo <cmd>`, `hint`, `progress`, `clear`, `exit`, and `skip` (reveals the CV directly). Tab completion and up/down history. Wrong commands give in-character but helpful errors that point toward the next step.
+
+Must-haves (recruiters must never be blocked):
+- A plain "Skip the challenge, download CV (PDF)" link, always visible on `/security`, in the footer and on `/about`. The CV is never only behind the game.
+- The challenge is optional; the security write-ups below it work without playing.
+- No browser storage beyond `sessionStorage` progress; no tracking.
+
+Security hygiene:
+- No real secrets anywhere. The passphrase is a game string, the fake login cannot submit anywhere, and the hidden path is a static page.
+- The CSP stays strict; the terminal uses no `eval` and no `innerHTML` with user input (text is rendered safely).
+- `X-Ops-Hint` is set only on the `/ops-7f3a` route via `next.config` headers.
+- `robots.txt` still allows normal indexing of real pages; the challenge pages are `noindex`.
+- The public `cv.pdf` has personal metadata stripped (author, software, edit history).
+
+Accessibility:
+- Playable by keyboard and screen reader: terminal output is an `aria-live` log, mission tracker updates are announced, hints are buttons.
+- Every DevTools step has an in-site alternative (Inspect layers and terminal), so nobody needs desktop DevTools.
+- The "ACCESS GRANTED" sequence respects reduced motion (static message) and never flashes.
+
 ## Descend the stack (Systems)
 
 The visitor zooms from the internet down to the OS, one level at a time. Each level is its own route, so it is linkable and Back works.
@@ -142,7 +180,7 @@ Accessibility for navigation:
 
 ## Extras
 
-- Hidden terminal opened with the backquote key, detected by the physical key (`event.code === "Backquote"`, not `event.key`) so it works on Hebrew and other non-US layouts. Ignored while focus is in any input, textarea or contenteditable. A footer toggle turns the shortcut off, and a visible "Open terminal" button in the footer opens it without the keyboard. Commands: `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`.
+- Terminal (also used by the Security challenge, see Break in to get my CV) opened with the backquote key, detected by the physical key (`event.code === "Backquote"`, not `event.key`) so it works on Hebrew and other non-US layouts. Ignored while focus is in any input, textarea or contenteditable. A footer toggle turns the shortcut off, and a visible "Open terminal" button in the footer opens it without the keyboard. Commands: `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`.
 - Real security headers in production, shown in the System layer.
 - Fast: Lighthouse 95+ on performance, best practices and SEO; 100 on accessibility.
 

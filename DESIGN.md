@@ -568,6 +568,44 @@ Each subject is its own world inside one system. **Never changes between themes:
 
 **How flavor and direction combine.** The exit is always the directional slide (old content leaves along the grid axis in nav order, 240ms), so pages still feel like neighbours on one sheet. The destination theme decides the enter. The project morph (`morph`, `morph-back`) overrides both, whatever the themes.
 
+### The vault: Break in to get my CV
+
+The Security theme's signature on `/security`, above the write-ups. Theme: The vault (amber accent, severity red for Critical / High only, redaction-bar motif and classification line).
+
+**Recruiter path first.** "Skip the challenge, download CV (PDF)" is a plain underlined link (with a document icon and "PDF, <size>") placed directly under the `/security` `h1`, before the target brief, so nobody has to read the game to get the file. The same link is in the footer on every page and on `/about`. The write-ups below the challenge never depend on it.
+
+**Target brief.** A surface-1 panel, 1px border-strong, radius md, styled as a declassified document: the classification line at the top ("Classification: Public · Simulated engagement"), then a definition list (Objective: retrieve the file cv.pdf from this site · Authorization: authorized engagement · Environment: simulated, client-side, nothing real is attacked) in body type, then "Start engagement" (secondary button, 44px). Sentence case throughout; the document feel comes from the layout and the classification line, not from all-caps or a typewriter font.
+
+**Mission tracker.** A fixed, collapsible panel (`aside aria-label="Mission tracker"`) that appears once the engagement starts and persists across pages:
+- Position: bottom-left, 16px inset, above the Inspect legend when that is open (`bottom: calc(var(--legend-h) + 16px)`). Level 3 surface (surface-3, border-strong, overlay shadow), radius md, width 320px (full width minus 32px below md).
+- Collapsed: 48px bar, "Mission · Stage 3 of 6: Traffic" plus an expand button (`aria-expanded`).
+- Expanded: an ordered list of the six stages. Each stage shows its state as icon + word: **Locked** (lock icon, text-muted), **Current** (filled square, accent, "Current"), **Done** (check, text-secondary, "Done"). The current stage shows its one-line objective and the hint control.
+- Hints: one button, "Show hint 1 of 3" → "Show hint 2 of 3" → "Show answer". Revealed hints stay listed under the stage. Hints used are counted.
+- Timer: off by default. A "Show timer" toggle (`aria-pressed`) in the tracker starts it; it shows elapsed time as `mm:ss` (tabular) and stops at the end. It never runs unless turned on, and it is never announced every second (only "Timer on" / "Timer off").
+- Updates (stage done, next stage unlocked) are announced in a polite live region: "Stage 2 done. Stage 3 unlocked: Traffic."
+- Progress (current stage, hints used, timer on/off and start time) is kept in `sessionStorage` only.
+
+**Stages and their in-site alternatives.** No step requires desktop DevTools:
+
+| Stage | Technique | DevTools path | In-site path |
+|---|---|---|---|
+| 1 Recon | Source review | View Source / Elements: an HTML comment on `/security` | Inspect → Code layer shows the comment as a code panel while stage 1 is current |
+| 2 Enumeration | robots.txt enumeration | Open `/robots.txt` | The comment links the path; `/robots.txt` is a normal link the player can open |
+| 3 Traffic | Header inspection | Network panel on `/ops-7f3a` | Inspect → System layer lists every response header of the current page, including `X-Ops-Hint` |
+| 4 Decode | Base64 decoding | Any decoder | Terminal `decode <base64>` |
+| 5 Access | Credential reuse | — | Terminal `ssh boaz@ops` with the decoded passphrase |
+| 6 Privilege escalation | sudo misconfiguration | — | Terminal `sudo -l`, then the allowed command |
+
+**`/ops-7f3a`.** A static, `noindex` page in The vault theme: a fake "Internal ops console" sign-in card (username, passphrase, "Sign in"). The form has no `action` and its button explains in a polite message that this is a simulated login and points the player to the terminal ("This console is offline. Operators connect over SSH."). Nothing is submitted anywhere. The response header `X-Ops-Hint` is set only on this route in `next.config`.
+
+**Terminal sequence and completion.** "ACCESS GRANTED" is a static block in the terminal (amber border, check icon), followed by output lines appearing one at a time at 80ms intervals; under reduced motion all lines appear at once. Nothing flashes. Then:
+- the CV opens in a new tab (`/files/cv.pdf`), with a visible "Download CV (PDF)" link in the output as the reliable path;
+- a **completion card** on `/security` (and in the terminal output): time (if the timer was on), hints used, "What you just did" (six lines: technique and how I defend against it), and "Contact me" (primary button to `/contact`).
+
+**Terminal additions** (the terminal itself is specified under Components): commands `help`, `ls`, `cat`, `cd`, `pwd`, `whoami`, `decode`, `ssh`, `sudo -l`, `sudo <cmd>`, `hint`, `progress`, `clear`, `exit`, `skip`, plus the site commands. Tab completes commands and file names; Up / Down walk history. Unknown or wrong commands answer in character and point to the next step ("Permission denied. Maybe check what you are allowed to run: sudo -l"). The passphrase prompt shows no characters and is a labeled input ("SSH passphrase").
+
+**Hygiene.** No real secrets: the passphrase is a game string in the client bundle by design. All output is rendered as React text nodes (no `innerHTML`, no `eval`, no `new Function`). The CSP does not change. Challenge pages (`/ops-7f3a`) are `noindex`; `robots.txt` disallows only the challenge path. `/.well-known/security.txt` is valid RFC 9116 (Contact, Expires, Preferred-Languages, Canonical) with one comment line as the easter egg. The public `cv.pdf` is checked for and stripped of author, producer, creator tool and XMP edit history before it ships.
+
 ### The network: Descend the stack
 
 The Systems theme's signature is a descent through six levels of the stack, each its own route. Theme: The network (steel accent, signal green for "Up" only, topology motif in the outer margins).
@@ -794,6 +832,7 @@ Every animation has a reduced form, and every reduced form is the instant end st
 | Stack zoom in / out / jump | Instant swap with a 120ms crossfade |
 | Trace a request | No auto-advance, no packet movement: a stepped list with Previous / Next |
 | Systems packet on the diagram | Removed |
+| Challenge "ACCESS GRANTED" sequence | All lines at once, static message |
 
 ## Accessibility
 
