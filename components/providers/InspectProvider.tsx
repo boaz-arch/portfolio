@@ -2,9 +2,9 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-export type Layer = "design" | "code" | "system";
+export type Layer = "ui" | "code" | "system";
 export const LAYERS: { id: Layer; label: string }[] = [
-  { id: "design", label: "Design" },
+  { id: "ui", label: "UI" },
   { id: "code", label: "Code" },
   { id: "system", label: "System" },
 ];
@@ -29,10 +29,10 @@ type InspectState = {
 const InspectContext = createContext<InspectState | null>(null);
 
 export function InspectProvider({ children }: { children: React.ReactNode }) {
-  const [layers, setLayers] = useState<Record<Layer, boolean>>({ design: false, code: false, system: false });
+  const [layers, setLayers] = useState<Record<Layer, boolean>>({ ui: false, code: false, system: false });
   const [legendOpen, setLegendOpen] = useState(false);
   const [status, setStatus] = useState("");
-  const [heroControlVisible, setHeroControlVisible] = useState(false);
+  const [heroControlVisible, setHeroControlVisible] = useState(true); // Home starts with its own control on screen; the header copy waits for the hero to scroll away.
   const [lastToggled, setLastToggled] = useState<Layer | null>(null);
 
   const toggle = useCallback((layer: Layer) => {
@@ -41,12 +41,12 @@ export function InspectProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const allOff = useCallback(() => {
-    setLayers({ design: false, code: false, system: false });
+    setLayers({ ui: false, code: false, system: false });
     setLegendOpen(false);
     setStatus("Inspect off");
   }, []);
 
-  const anyOn = layers.design || layers.code || layers.system;
+  const anyOn = layers.ui || layers.code || layers.system;
 
   const value = useMemo<InspectState>(
     () => ({

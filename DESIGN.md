@@ -446,6 +446,8 @@ Every component's accessible role, name and state is listed in the Accessibility
 
 A minimal entry point. The header nav is the way into sections; Home has no intro paragraph, no Explore links and no featured projects.
 
+**Header on Home.** The full section nav stays in the header (and only there). On Home each nav item carries its destination theme (`data-section`) and takes that section accent on hover and focus, as a preview of the world it leads to (Work stays neutral: its accent follows the lens). No item is current, so there is no indicator; it appears and then slides once the visitor enters a section.
+
 **Layout.** From lg: the photo in columns 1–5, the text and controls in columns 7–12, vertically centred against each other, with section-y space above and below. Below lg: stacked, photo first at a smaller size (max 280px wide at base, 360px at md), then the text and controls. Theme: The Sheet.
 
 - **Photo:** 4:5 frame, radius md, 1px border. Until the real file exists (`/public/images/boaz.jpg`), a neutral placeholder: surface-1 fill with the hatch, and a clear "[PLACEHOLDER PHOTO]" label (small, text-muted, on a surface-1 plate). The placeholder is `role="img"` with the same alt text the photo will have. The real photo is served with `next/image`: explicit width and height (from `content/site.ts`), `sizes` matching the layout (`(min-width: 1024px) 40vw, (min-width: 768px) 360px, 280px`), `priority` (it is the LCP element), so there is no layout shift. Alt: "Boaz King" plus a short description, from `content/site.ts`. Never decorative, never inside a link.

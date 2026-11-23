@@ -76,15 +76,21 @@ export const site = {
     placeholder: true,
   },
 
+  /** Home is a minimal entry point (BRIEF.md: Home). */
   home: {
-    intro:
-      "Placeholder: two sentences on what you do across design, development, systems and security, and what kind of work you want next.",
-    explore: [
-      { href: "/work", label: "Work", theme: "home", text: "Projects across design, development, systems and security, with case studies." },
-      { href: "/security", label: "Security", theme: "security", text: "Capture-the-flag challenges, lab write-ups, research, certifications, and a challenge to break in for my CV." },
-      { href: "/systems", label: "Systems", theme: "systems", text: "Descend the stack from the internet to the operating system, one level at a time." },
-      { href: "/about", label: "About", theme: "about", text: "The history behind the work, how I work, and the tools I use." },
-      { href: "/contact", label: "Contact", theme: "contact", text: "Email, PGP key, profiles, and a form for job offers, projects and collaboration." },
+    photo: {
+      src: "/images/boaz.jpg", // Add the real photo here; set placeholder to false
+      width: 1200,
+      height: 1500,
+      alt: "Boaz King. [PLACEHOLDER: one short sentence describing the photo]",
+      placeholder: true,
+    },
+    howItWorksTitle: "How this site works",
+    howItWorks: [
+      "Each section is its own world: Work, Security, Systems, About and Contact. Use the header to move between them.",
+      "The Inspect buttons show how any page is built, from its grid and type to its code and the servers behind it.",
+      "The terminal is a shortcut to everything: my CV, GitHub, contact details and projects.",
+      "And the Security page hides a challenge. Break in, and you get my CV.",
     ],
   },
 

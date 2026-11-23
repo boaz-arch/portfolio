@@ -75,8 +75,11 @@ export function Header() {
                   <TransitionLink
                     href={item.href}
                     aria-current={ariaCurrent(item.href)}
+                    data-section={isHome ? themeFor(item.href) : undefined}
                     className={[
-                      "inline-flex min-h-11 items-center px-3 text-label transition-colors duration-(--dur-fast) ease-out hover:text-text",
+                      "inline-flex min-h-11 items-center px-3 text-label transition-colors duration-(--dur-fast) ease-out",
+                      // On Home each item previews its world: its section accent on hover and focus.
+                      isHome ? "hover:text-accent focus-visible:text-accent" : "hover:text-text",
                       active === item.href ? "text-text" : "text-text-secondary",
                     ].join(" ")}
                   >
@@ -123,8 +126,10 @@ export function Header() {
                 <TransitionLink
                   href={item.href}
                   aria-current={ariaCurrent(item.href)}
+                  data-section={isHome ? themeFor(item.href) : undefined}
                   onClick={() => setMenuOpen(false)}
                   className={[
+                    isHome ? "hover:text-accent focus-visible:text-accent" : "",
                     "flex min-h-11 items-center text-subtitle",
                     active === item.href ? "text-text underline decoration-2 underline-offset-8" : "text-text-secondary",
                   ].join(" ")}

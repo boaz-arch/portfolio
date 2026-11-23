@@ -58,6 +58,8 @@ Home contains only:
 
 Not on Home: an intro paragraph, Explore links, featured projects (those stay on `/work`).
 
+Home keeps the site header with the full section nav (Work, Security, Systems, About, Contact): it is the main way into the sections from Home. On Home the nav items take their section accent on hover and focus, as a preview of each world, and the sliding indicator starts with no section active. The nav lives in the header only; it is not repeated in the page body.
+
 Design: calm and spacious. Photo and text side by side from 1024px (photo in columns 1–5, text and controls in columns 7–12), stacked below that (photo first, smaller). The Inspect layers' first draw-in on Home is the signature moment of the whole site and gets the most care. The header's Inspect control exists on every other page; on Home the in-page UI/Code/System buttons are the same control (one shared state), and the header copy stays hidden until the hero scrolls away.
 
 Accessibility: one h1 (the name); "How this site works" is an h2. The photo has meaningful alt text, is not decorative, and is not inside a link. All buttons are keyboard operable with a visible focus state; toggles announce their state. Without JavaScript the photo, h1 and description show, and the buttons that need JavaScript are hidden.
