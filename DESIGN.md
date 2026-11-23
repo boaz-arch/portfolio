@@ -1,0 +1,707 @@
+---
+name: Boaz King — Portfolio
+description: Calm, dark slate surface; a drafting-film Inspect layer shows the real grid, code and infrastructure underneath.
+colors:
+  # Dark theme (default)
+  bg: "#0f141b"
+  surface-1: "#151b24"
+  surface-2: "#1b222d"
+  surface-3: "#222a37"
+  text: "#e7eaef"
+  text-secondary: "#b4bcc8"
+  text-muted: "#8f98a6"
+  border: "#262f3c"
+  border-strong: "#6d7a8c"
+  design-accent: "#78aef5"
+  security-accent: "#e8ad4a"
+  focus-ring: "#9cc4fa"
+  on-accent: "#0f141b"
+  # Light theme
+  light-bg: "#f4f6f8"
+  light-surface-1: "#ffffff"
+  light-surface-2: "#eceff3"
+  light-surface-3: "#e2e6ec"
+  light-text: "#121821"
+  light-text-secondary: "#3a4453"
+  light-text-muted: "#545e6d"
+  light-border: "#d6dbe2"
+  light-border-strong: "#717b8a"
+  light-design-accent: "#1c5ac2"
+  light-security-accent: "#8a5300"
+  light-focus-ring: "#1c5ac2"
+  light-on-accent: "#ffffff"
+typography:
+  display:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(2.5rem, 1.6rem + 4.2vw, 4rem)"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.03em"
+  page-title:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 1.5rem + 2.4vw, 3rem)"
+    fontWeight: 600
+    lineHeight: 1.1
+    letterSpacing: "-0.025em"
+  headline:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem)"
+    fontWeight: 600
+    lineHeight: 1.15
+    letterSpacing: "-0.02em"
+  title:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 600
+    lineHeight: 1.25
+    letterSpacing: "-0.01em"
+  subtitle:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    lineHeight: 1.35
+    letterSpacing: "0em"
+  lead:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "clamp(1.125rem, 1rem + 0.5vw, 1.375rem)"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "-0.005em"
+  body:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "0em"
+  small:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "0.005em"
+  label:
+    fontFamily: "Atkinson Hyperlegible Next, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 600
+    lineHeight: 1.25
+    letterSpacing: "0.01em"
+  mono-annotation:
+    fontFamily: "Atkinson Hyperlegible Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: 1.35
+    letterSpacing: "0.01em"
+  mono-code:
+    fontFamily: "Atkinson Hyperlegible Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontSize: "0.8125rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "0em"
+  mono-terminal:
+    fontFamily: "Atkinson Hyperlegible Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "0em"
+rounded:
+  none: "0px"
+  xs: "2px"
+  sm: "4px"
+  md: "6px"
+spacing:
+  "1": "4px"
+  "2": "8px"
+  "3": "12px"
+  "4": "16px"
+  "5": "20px"
+  "6": "24px"
+  "8": "32px"
+  "10": "40px"
+  "12": "48px"
+  "16": "64px"
+  "20": "80px"
+  "24": "96px"
+  "32": "128px"
+components:
+  button-primary:
+    backgroundColor: "{colors.text}"
+    textColor: "{colors.bg}"
+    typography: "{typography.label}"
+    rounded: "{rounded.sm}"
+    padding: "0 16px"
+    height: "44px"
+  button-secondary:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text}"
+    typography: "{typography.label}"
+    rounded: "{rounded.sm}"
+    padding: "0 16px"
+    height: "44px"
+  inspect-toggle:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.label}"
+    rounded: "{rounded.none}"
+    padding: "0 14px"
+    height: "44px"
+  inspect-toggle-pressed:
+    backgroundColor: "{colors.surface-3}"
+    textColor: "{colors.text}"
+  filter-button:
+    backgroundColor: "{colors.bg}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.label}"
+    rounded: "{rounded.sm}"
+    padding: "0 14px"
+    height: "44px"
+  filter-button-pressed:
+    backgroundColor: "{colors.surface-3}"
+    textColor: "{colors.text}"
+  tag:
+    backgroundColor: "{colors.surface-2}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.small}"
+    rounded: "{rounded.xs}"
+    padding: "2px 8px"
+  annotation-plate:
+    backgroundColor: "{colors.design-accent}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.mono-annotation}"
+    rounded: "{rounded.none}"
+    padding: "2px 6px"
+  code-name-tag:
+    backgroundColor: "{colors.surface-3}"
+    textColor: "{colors.design-accent}"
+    typography: "{typography.mono-annotation}"
+    rounded: "{rounded.none}"
+    padding: "2px 6px"
+  code-panel:
+    backgroundColor: "{colors.surface-2}"
+    textColor: "{colors.text}"
+    typography: "{typography.mono-code}"
+    rounded: "{rounded.md}"
+    padding: "16px"
+  terminal:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text}"
+    typography: "{typography.mono-terminal}"
+    rounded: "{rounded.md}"
+    padding: "16px"
+  skip-link:
+    backgroundColor: "{colors.design-accent}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.label}"
+    rounded: "{rounded.sm}"
+    padding: "0 16px"
+    height: "44px"
+  nav:
+    backgroundColor: "{colors.bg}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.label}"
+    height: "64px"
+---
+
+# Design System: Boaz King — Portfolio
+
+DESIGN.md is the source of truth for every page. It sits under BRIEF.md: if the two conflict, the brief wins and this file gets updated. If DESIGN.md conflicts with a skill (design-taste-frontend, Impeccable or any other), DESIGN.md wins.
+
+The direction is **pinned by BRIEF.md**. It names the world (calm dark slate, blueprint blue for design and code, amber for security, one sans plus a mono kept inside Inspect) and the first screen (name, one line, the Inspect control). So there was no direction roll. Linear and Vercel are **structural references only**: tonal surfaces with no shadows (Linear), a 4px spacing rhythm and a strict sans/mono split (Vercel). None of their colors, type, button shapes or motifs carry over.
+
+## Overview
+
+**Creative North Star: "Drafting Film"**
+
+The page is a finished drawing. Inspect lays a sheet of drafting film over it: a translucent sheet carrying the architect's construction lines, dimensions and notes. With the film off, the page is quiet. Slate ground, soft off-white type, left-aligned on a 12-column grid, with lots of empty space and nothing colored. With the film on, the same page shows how it was made: its grid, its spacing, its components, its code and its infrastructure, all labeled with values that are actually in use.
+
+The layers have their own drawing language, borrowed from technical drafting rather than browser devtools or design tools. Square anchor nodes, not dots. 45° slash ticks at dimension ends, not arrowheads. Leader lines that bend at 90°. Labels on square-cornered solid plates. Blueprint blue marks design and code. Amber marks security, and only security. Every annotation is generated from the live DOM and the token map, never typed by hand.
+
+The empty space has a job. At ≥1024px, columns 9–12 of each content section are left open as the **margin**, which is where Inspect labels and code snippets go. This is how annotations avoid covering content on wide screens: the space is reserved for them. On narrower screens, labels move into a docked legend (see Inspect overlay spec).
+
+**Key Characteristics:**
+- Deep slate in both directions: dark by default, cool paper in light mode. No pure black, no pure white page.
+- Two accents with fixed meanings: blueprint blue means design or code, amber means security. Nothing else is colored.
+- One sans for all content. Mono only inside Inspect and the terminal.
+- Depth from surface steps and 1px borders. A shadow only on floating layers.
+- Square drafting geometry for Inspect, small 2–6px radii for the interface, nothing fully rounded.
+- One signature motion: the film drawing itself in.
+
+## Colors
+
+The palette is a cool, low-chroma slate scale with two accents that act as signals, not decoration.
+
+### Design accent (blueprint blue)
+- **Blueprint Blue**: dark `#78aef5`, light `#1c5ac2`. Used for Design and Code layer lines, annotation plates, code-layer name tags, the terminal prompt, code keywords and the skip link. It passes as text on every surface in both themes (≥5.09:1), so labels drawn in it are readable, not just decorative.
+
+### Security accent (amber)
+- **Survey Amber**: dark `#e8ad4a`, light `#8a5300`. Used for security notes, security nodes and edges in diagrams, the security-header list in the System layer, and threat-model callouts. Light mode uses a deep amber so it can serve as text (5.05:1 or better); bright amber on white fails.
+
+### Neutral (dark, default)
+- **Deep Slate** `#0f141b` (bg): the page ground. Blue-grey, clearly not black.
+- **Slate 1** `#151b24` (surface-1): project rows on hover, buttons, terminal body.
+- **Slate 2** `#1b222d` (surface-2): open expandable panels, code panels, tags.
+- **Slate 3** `#222a37` (surface-3): pressed toggles, legend sheet, name tags.
+- **Paper White** `#e7eaef` (text): headings and body. Soft off-white, never `#fff`.
+- **Pencil Grey** `#b4bcc8` (text-secondary): lead lines, metadata, nav links, footer text.
+- **Graphite** `#8f98a6` (text-muted): timestamps, line numbers, placeholder markers. It passes 4.5:1 on every surface, so it can be used for real text, not only fine print.
+- **Hairline** `#262f3c` (border): decorative dividers and resting card edges. Carries no information.
+- **Rule Line** `#6d7a8c` (border-strong): input edges, toggle outlines, diagram strokes, card edges on hover/focus. ≥3.31:1 on every surface.
+- **Focus Blue** `#9cc4fa` (focus-ring).
+
+### Neutral (light)
+- **Cool Paper** `#f4f6f8` (bg), **White** `#ffffff` (surface-1), `#eceff3` (surface-2), `#e2e6ec` (surface-3).
+- **Ink** `#121821` (text), **Pencil** `#3a4453` (text-secondary), **Graphite** `#545e6d` (text-muted).
+- **Hairline** `#d6dbe2` (border), **Rule Line** `#717b8a` (border-strong).
+- **Focus Blue** `#1c5ac2` (focus-ring). In light mode the focus color equals the design accent. That's acceptable because the focus ring is a thick outline with an offset, never a thin line (see Accessibility).
+
+### Implementation
+
+Each role is a CSS custom property on `:root` (dark) and `:root[data-theme="light"]`, exposed to Tailwind under the same names (`bg-surface-2`, `text-muted`, `border-strong`). Components use roles only, never hex values. Set `color-scheme: dark` / `light` with the theme so form controls, scrollbars and the caret follow.
+
+Translucent tints, decorative only (never text):
+- `design-tint`: design-accent at 8% (dark) / 7% (light). Fills grid column bands in the Design layer.
+- `security-tint`: security-accent at 10% (dark) / 8% (light). Fills security callouts behind amber text, which still passes at the listed ratios.
+
+### Contrast table
+
+All ratios are WCAG 2.x relative-luminance contrast, computed from the hex values above. Requirements: text 4.5:1 (large text 3:1); UI components and meaningful graphics 3:1.
+
+**Dark theme**
+
+| Foreground | on bg `#0f141b` | on surface-1 | on surface-2 | on surface-3 | Use | Req. |
+|---|---|---|---|---|---|---|
+| text `#e7eaef` | 15.33 | 14.34 | 13.26 | 11.97 | body, headings | 4.5 |
+| text-secondary `#b4bcc8` | 9.65 | 9.03 | 8.35 | 7.54 | metadata, nav | 4.5 |
+| text-muted `#8f98a6` | 6.35 | 5.94 | 5.49 | 4.96 | small meta | 4.5 |
+| design-accent `#78aef5` | 8.07 | 7.55 | 6.98 | 6.31 | annotations as text | 4.5 |
+| security-accent `#e8ad4a` | 9.25 | 8.65 | 8.00 | 7.22 | security notes as text | 4.5 |
+| focus-ring `#9cc4fa` | 10.29 | 9.63 | 8.90 | 8.04 | focus outline | 3 |
+| border-strong `#6d7a8c` | 4.24 | 3.96 | 3.66 | 3.31 | inputs, strokes | 3 |
+| border `#262f3c` | 1.37 | 1.28 | 1.18 | 1.07 | decorative only | none |
+| on-accent `#0f141b` on design-accent | 8.07 | | | | annotation plates, skip link | 4.5 |
+| on-accent on security-accent | 9.25 | | | | amber plates | 4.5 |
+
+**Light theme**
+
+| Foreground | on bg `#f4f6f8` | on surface-1 `#fff` | on surface-2 | on surface-3 | Use | Req. |
+|---|---|---|---|---|---|---|
+| text `#121821` | 16.45 | 17.82 | 15.45 | 14.23 | body, headings | 4.5 |
+| text-secondary `#3a4453` | 9.09 | 9.85 | 8.54 | 7.86 | metadata, nav | 4.5 |
+| text-muted `#545e6d` | 6.06 | 6.56 | 5.69 | 5.24 | small meta | 4.5 |
+| design-accent `#1c5ac2` | 5.89 | 6.38 | 5.53 | 5.09 | annotations as text | 4.5 |
+| security-accent `#8a5300` | 5.84 | 6.33 | 5.49 | 5.05 | security notes as text | 4.5 |
+| focus-ring `#1c5ac2` | 5.89 | 6.38 | 5.53 | 5.09 | focus outline | 3 |
+| border-strong `#717b8a` | 3.95 | 4.28 | 3.71 | 3.42 | inputs, strokes | 3 |
+| border `#d6dbe2` | 1.28 | 1.39 | 1.21 | 1.11 | decorative only | none |
+| on-accent `#ffffff` on design-accent | 6.38 | | | | annotation plates, skip link | 4.5 |
+| on-accent on security-accent | 6.33 | | | | amber plates | 4.5 |
+
+**Failures from the references, and how they're fixed here**
+
+| Reference failure | Ratio | Fix in this system |
+|---|---|---|
+| Linear `ink-tertiary #62666d` as muted text | 3.62 | Muted is `#8f98a6` (dark) / `#545e6d` (light): ≥4.96 / ≥5.24 on every surface. There is no "disabled grey" text token. Disabled controls use text-muted plus a dashed border and the `disabled` attribute. |
+| Linear accent `#5e6ad2` as text | 4.44 | No violet anywhere. Blueprint blue `#78aef5` / `#1c5ac2` passes as text on every surface (≥6.31 / ≥5.09). |
+| Vercel `mute #888888` on white | 3.54 | Same muted fix as above. |
+| Vercel link `#0070f3` on `#fafafa` | 4.36 | Links are text color with an underline, not accent color. The accent is reserved for annotations. Where blue text appears on light, it is `#1c5ac2` (≥5.09). |
+| Vercel amber `#f5a623` on white | 2.03 | Light-mode amber is `#8a5300` (≥5.05). Bright amber appears only on dark surfaces. |
+| Both: hairlines below 3:1 | 1.1–1.5 | Split into `border` (decorative, no meaning) and `border-strong` (≥3.31 dark / ≥3.42 light) for anything a user must see. |
+
+**`prefers-contrast: more`:** `border` takes the value of `border-strong`; `text-muted` takes `text-secondary`; tints drop to 0 (lines only); Inspect line weight goes from 1px to 2px.
+
+**`forced-colors: active`:** all accents map to system colors: lines `CanvasText`, plates `Highlight` / `HighlightText`, focus `Highlight`. SVG strokes use `currentColor` so they follow. Meaning survives because no state depends on color alone (see Accessibility).
+
+### Named Rules
+**The Two Signals Rule.** Blue always means design or code. Amber always means security. No third color is ever added, and neither accent is used just to make something pretty: no blue buttons, no amber hovers, no accent-colored headings.
+
+**The No-Fake-Contrast Rule.** Any ratio not in the table above must be computed before it ships. Translucent overlays don't count as a background. Measure against the solid surface underneath.
+
+## Typography
+
+**Sans:** Atkinson Hyperlegible Next (fallback: `ui-sans-serif, system-ui, sans-serif`)
+**Mono:** Atkinson Hyperlegible Mono (fallback: `ui-monospace, SFMono-Regular, Menlo, monospace`)
+
+**Why this pair:**
+- **The glyphs serve the content.** Atkinson Hyperlegible came out of the Braille Institute's low-vision research. Its letterforms are deliberately easy to tell apart: `I l 1`, `0 O`, `rn m`, and mirror pairs like `b d`. This site displays CSP strings, hashes, header names, IP ranges, port numbers and CTF flags, where telling those characters apart matters.
+- **The mono matches the sans.** The mono is drawn on the same skeleton as the sans. When an Inspect label sits next to a heading, the two read as one family with two jobs. That supports the brief's sans-for-content, mono-for-Inspect split better than an unrelated technical mono would.
+- **It fits the brief's priorities.** The brief makes accessibility override style. A typeface built for readers with low vision is the brief's own priority showing in the letterforms. Accessibility recruiters will recognize the choice, and nobody would mistake it for a Linear or Vercel template.
+- **It's practical.** Both are open-source (OFL), on Google Fonts, and variable (200–800 weight). Self-host them through `next/font/google` with `display: "swap"` and the Latin subset, which gives 2 woff2 files and fallback metric adjustment so the swap causes no layout shift.
+
+**Character:** plain, sturdy and slightly warm. More engineer's notebook than glossy product site. At display sizes, tight tracking (−0.03em) and weight 600 tighten its humanist curves into something exact.
+
+### Hierarchy
+
+| Role | Size | Weight | Line-height | Tracking | Use |
+|---|---|---|---|---|---|
+| display | clamp 40→64px | 600 | 1.05 | −0.03em | Home hero name only (the home `h1`) |
+| page-title | clamp 32→48px | 600 | 1.1 | −0.025em | `h1` on every other page |
+| headline | clamp 26→36px | 600 | 1.15 | −0.02em | `h2` section headings |
+| title | 22px | 600 | 1.25 | −0.01em | `h3`: project titles, case study sub-sections |
+| subtitle | 18px | 600 | 1.35 | 0 | `h4`, summary rows of expandable panels |
+| lead | clamp 18→22px | 400 | 1.5 | −0.005em | Hero line, section intros |
+| body | 16px | 400 | 1.6 | 0 | All running text. Measure 60–72ch. |
+| small | 14px | 400 | 1.5 | 0.005em | Metadata, tags, footer, figure descriptions |
+| label | 14px | 600 | 1.25 | 0.01em | Buttons, toggles, filters, nav. Sentence case. |
+| mono-annotation | 12px | 500 | 1.35 | 0.01em | Inspect plates and leaders. Never smaller. |
+| mono-code | 13px | 400 | 1.6 | 0 | Code panels in the Code layer |
+| mono-terminal | 14px | 400 | 1.6 | 0 | Terminal input and output |
+
+- Weights used: 400 and 600 for sans; 400 and 500 for mono. No 700 or above.
+- Headings use `text-wrap: balance`; body uses `text-wrap: pretty`.
+- Use `font-variant-numeric: tabular-nums` in metric tables, dates, header lists and every Inspect value, so numbers align.
+- All sizes are in `rem` so browser text zoom scales everything. All line heights are unitless so text-spacing overrides (line-height 1.5, paragraph spacing 2em, letter-spacing 0.12em, word-spacing 0.16em) reflow without clipping. Text containers never set a fixed `height`, and plates and chips use `min-height`.
+
+### Named Rules
+**The Mono Boundary Rule.** Mono appears only inside the three Inspect layers, the Inspect legend and the terminal. Inline technical terms in prose (`Content-Security-Policy`, `nginx`) use the sans on a surface-2 tint with radius xs. Case studies show code through the Code layer, never as body code blocks.
+
+**The Sentence Case Rule.** No all-caps text anywhere: no uppercase eyebrows, labels, buttons or nav. Text never carries a label above its heading.
+
+## Layout
+
+**A left-aligned 12-column grid, with the right edge reserved as a margin for Inspect labels.**
+
+### Breakpoints
+
+| Name | Min width | Columns | Gutter | Side margin | Notes |
+|---|---|---|---|---|---|
+| base | 320px | 12 | 12px | 16px | Content spans all 12 columns. Inspect uses the legend. |
+| sm | 375px | 12 | 12px | 20px | Hero display size steps up. |
+| md | 768px | 12 | 24px | 32px | Two-column splits begin (text 1–7, aside 8–12). |
+| lg | 1024px | 12 | 24px | 48px | Body text occupies columns 1–8; columns 9–12 become the Inspect margin. |
+| xl | 1440px | 12 | 32px | auto, ≥64px | The container caps at its max width. |
+
+- **Max content width:** 1200px (75rem) inside the side margins, aligned left in the container. The container itself is centered in the viewport, so both content edges are equal.
+- **The grid is always 12 columns.** The Design layer draws the real grid at every width; it never draws a different one. On narrow screens content spans `1 / -1`.
+- **Reading measure:** running text spans columns 1–8 at lg and above (≈ 760px at 1200, about 68ch at 16px) and never spans all 12.
+- **Reflow:** at 320 CSS px (and at 200% zoom on a 640px window) every page is one column with no horizontal scroll. Tables that can't fit turn into stacked definition lists below md. Code panels wrap (`white-space: pre-wrap`) instead of scrolling sideways.
+
+### Spacing (4px base)
+
+Tokens: `1`=4, `2`=8, `3`=12, `4`=16, `5`=20, `6`=24, `8`=32, `10`=40, `12`=48, `16`=64, `20`=80, `24`=96, `32`=128 (px).
+
+- **Section spacing:** `--section-y: clamp(4rem, 2rem + 8vw, 8rem)` (64 → 128px) above each `h2` section. Sections are separated by space only, never by a divider and never by background bands.
+- **Heading rhythm:** more space above a heading than below it. Above `h2`: section-y. Below `h2`: 32px (`8`). Above `h3`: 48px (`12`). Below `h3`: 12px (`3`). Paragraph gap: 16px (`4`).
+- **Component internals:** controls 8–16px, panels 16–24px, project rows 32px vertical.
+- **Anchors:** `scroll-padding-top: calc(var(--header-h) + 16px)`, so linked headings and focused elements are never hidden under the sticky header.
+
+### Named Rules
+**The Margin Rule.** At lg and above, nothing in body content occupies columns 9–12 except a section's optional aside (a figure or a metadata list) when Inspect is off. When Inspect is on, the margin belongs to labels and snippets, and asides pass under the film without being hidden. Labels never cover content.
+
+**The Left Edge Rule.** Everything aligns left to column 1. No centered sections, no centered headings over left-aligned text.
+
+## Elevation & Depth
+
+Flat by default. Depth comes from the slate steps and 1px borders, as in Linear's surface ladder, but with no glow, edge highlights or gradients. A shadow appears only on floating layers that sit above the page.
+
+| Level | Surface | Edge | Shadow | Role |
+|---|---|---|---|---|
+| 0 | bg | none | none | Page ground, sections, header (solid bg, no blur) |
+| 1 | surface-1 | border | none | Buttons, project-row hover fill, terminal body |
+| 2 | surface-2 | border | none | Open panels, code panels, tags, inline terms |
+| 3 | surface-3 | border-strong | `overlay` | Terminal dialog, Inspect legend sheet, System sheet |
+
+- **`overlay` shadow** (only for floating layers): dark `0 24px 48px -16px rgb(4 7 12 / 0.6), 0 2px 6px rgb(4 7 12 / 0.4)`; light `0 24px 48px -16px rgb(18 24 33 / 0.18), 0 2px 6px rgb(18 24 33 / 0.08)`. It has a vertical offset and soft blur; it is never a halo.
+- **Backdrop:** the terminal dialog uses `::backdrop` at bg with 60% opacity. No blur.
+- **The Inspect film is not a level.** It is drawn above level 0–2 content and below level 3, with `pointer-events: none`, so the page stays usable underneath.
+
+### Named Rules
+**The Flat-At-Rest Rule.** A surface gains a shadow only if it floats above the page and can be dismissed. Cards, rows and panels never get one.
+
+## Shapes
+
+- **Radii:** `none` 0 for the Inspect film (lines, plates, nodes, markers) and toggle segments, the drafting geometry. `xs` 2px for tags and inline terms. `sm` 4px for buttons, inputs, filter buttons and the skip link. `md` 6px for code panels, the terminal, the legend sheet and image frames.
+- **Never fully rounded.** There are no pill buttons, pill tags, circular icon buttons or round dots. Even the Inspect anchor nodes are 5px squares. Nothing on the site uses `9999px`.
+- **Borders:** 1px is the only interface weight. 1.5px for content diagram strokes. 2px for the focus ring and for Inspect lines under `prefers-contrast: more`.
+- **Drafting marks (Inspect only):** 5×5px square anchor nodes; 45° slash ticks, 7px long, at dimension-line ends; leader lines with a single 90° elbow; plates with square corners and a 1px notch gap where the leader meets them.
+
+## Components
+
+Every component's accessible role, name and state is listed in the Accessibility section.
+
+### Header and nav
+- **Structure:** `<header>` sticky at the top, 64px tall, solid bg, a hairline `border` bottom only after scrolling 8px. It holds a wordmark link (the name in subtitle type, links home), the primary nav, the theme toggle, and (on pages other than home, or on home once the hero is out of view) the compact Inspect control.
+- **Nav links:** Work, Security, Systems, About, Contact. On home they jump to sections, on other pages they go to `/#section`. Label type, text-secondary, 44px tall hit area. Hover: text color plus an underline drawn left to right (`text-decoration-thickness: 1px; text-underline-offset: 6px`). Current section/page: text color, persistent underline and `aria-current`.
+- **Below md:** the links collapse behind a `Menu` button that opens a panel directly below the header (not full screen, not a modal). Escape or a second press closes it and returns focus to the button.
+- **Labels:** `<nav aria-label="Primary">`; the footer nav is `aria-label="Footer"`; the case study's on-page list is `aria-label="On this page"`.
+
+### Skip link
+- The first focusable element in `<body>`: "Skip to main content", targeting `<main id="main" tabindex="-1">`.
+- Off-screen until focused (`translateY(-120%)`). On focus it appears at the top left, 16px inset, above the header (z-index above level 3), in design-accent with on-accent text, 44px tall, radius sm. It appears instantly in every motion mode.
+
+### Theme toggle
+- An icon button, 44×44, radius sm, transparent until hover (surface-1). It shows a sun icon in dark mode and a moon in light; 20px drawn icons with a 1.5px stroke.
+- `<button aria-pressed="true|false">` with the accessible name "Dark theme". Pressed means dark. A tooltip-free design: the name is announced, and the visible icon changes.
+- **No flash of the wrong theme:** a small inline script in `<head>`, before any stylesheet paints, reads `localStorage.theme` (in try/catch). It falls back to dark, never to `prefers-color-scheme`, since the brief says dark by default. It sets `data-theme` and `color-scheme` on `<html>`. The choice is saved on every toggle. Changing theme swaps tokens instantly with no color transition.
+
+### Inspect control
+- **Shape:** a group with the visible label "Inspect" (label type, text-secondary) followed by three joined toggle segments: **Design**, **Code**, **System**. Each segment is 44px tall, radius none on inner joins and sm on the outer corners, with a 1px border-strong outline. Each has a 16px drafting icon (grid square / angle brackets / three linked nodes) plus its text.
+- **States:** off is surface-1 with text-secondary text and a **hollow 8px square** indicator. On (`aria-pressed="true"`) is surface-3 with text color and a **filled 8px square** in design-accent, or security-accent for System. The filled/hollow square carries state without relying on color. Layers toggle independently, so several can be on at once.
+- **Show as list:** when any layer is on, a fourth button "Show values as list" appears after the group. It opens the Inspect legend (below), which is the readable version of everything the film draws.
+- **Placement:** on home, inline in the hero under the lead line. On every other page, and in the header on home once the hero scrolls away, there is a compact version (icons + text from md up, icons only below md with names kept as accessible names). Both instances share one state.
+- **Keyboard:** Tab reaches each segment. Space/Enter toggles. Escape turns every layer off and returns focus to the segment that last changed state.
+
+### Project row (Selected work)
+Projects are a **list of rows**, not a grid of same-size cards.
+- Each row is an `<article>` in an `<ul>`, 32px vertical padding, separated by a hairline border. At lg: a screenshot frame in columns 1–5 (16:10, radius md, 1px border) and text in columns 6–8 when Inspect is off. Below md, it stacks: frame, then text.
+- **Text:** title (`h3`, title type) as the only link, stretched over the row with `::after` so the whole row is clickable, followed by a one-line summary (body, text-secondary), then the tag list, then role and year (small, text-muted).
+- **Placeholder frames:** until real screenshots exist, the frame shows a 45° hatch pattern in border color with "Placeholder: project screenshot" in small text-muted. Never a stock image.
+- **Hover/focus:** row fill goes to surface-1, the frame edge to border-strong, and the title's underline draws in (120ms). No lift, no scale, no shadow.
+
+### Tags
+- A small inline label: surface-2, 1px border, radius xs, `2px 8px`, small type in text-secondary, with a 14px icon before the text: pen nib (Design), brackets (Development), linked nodes (Systems), shield (Security). Tags are never colored; the icon and word carry the category.
+- Tags in rows are plain text in a `<ul aria-label="Tags">`. They are not buttons. Filtering happens only in the tag filter.
+
+### Tag filter
+- A row of buttons above the project list: **All**, **Design**, **Development**, **Systems**, **Security**. Each has the tag's icon and label type, is 44px tall, radius sm, 1px border-strong edge.
+- Single select. The current filter is `aria-pressed="true"`: surface-3 fill, text color, plus a checkmark icon before the label (state without color). The others are bg with text-secondary.
+- Wraps onto multiple lines at narrow widths. It never scrolls sideways.
+- Results: rows that don't match are removed instantly, with no animation. A visually hidden `<p aria-live="polite">` and a visible small text-muted line both say, for example, "Showing 3 of 6 projects tagged Security." If a filter matches nothing (not expected with real data), it says so and offers a "Show all projects" button.
+
+### Case study sections
+- **Header:** `h1` page-title, then the lead line, then a metadata list (`<dl>`: Role, Timeline, Team, Stack) in small type, two columns at md+.
+- **On this page:** an inline `<nav aria-label="On this page">` list under the header that links to the six sections. Not sticky, since the margin belongs to Inspect.
+- **Sections, in order, each an `h2`:** Problem → Design decisions → How it's built → System architecture → Security → Outcome.
+  - *Design decisions:* each decision is an `h3` with the decision, the alternative rejected and why. Screenshots go in frames with alt text.
+  - *How it's built:* prose plus a component/stack list. The Code layer shows the real snippets for this section.
+  - *System architecture:* one diagram (see Diagram style) with its text alternative.
+  - *Security:* three `h3`s. **Threat model** is a table: asset, threat, likelihood, mitigation; it becomes stacked definition lists below md. **Protections** is a list where each item starts with a shield icon and the word "Protection". **Testing** describes the method, tools and findings. Security callouts use security-tint, a full 1px amber border, radius sm and a "Security note" text label. They never use a side stripe.
+  - *Outcome:* results as a `<table>`: metric, before, after, how it was measured. Tabular numbers. Not the big-number hero-metric template. Placeholder numbers read "[Placeholder: metric]" until real.
+- **Between studies:** at the end, "Previous case study: *name*" and "Next case study: *name*" links, full names, no arrow glyphs.
+
+### Diagram style (content diagrams)
+- Used for system architecture, homelab/network diagrams and the System layer.
+- Inline SVG, `viewBox` scaled to the container width. **Nodes:** rectangles, radius xs, surface-1 fill, 1px border-strong edge, 14px sans labels (content diagrams use the sans; only the System layer's header values use mono). **Edges:** 1.5px text-secondary lines with solid 7px arrowheads. Solid line means request; dashed (6 4) means response or async. A legend is always shown.
+- **Security nodes and edges** (TLS termination, WAF, firewall, auth): amber stroke, a shield icon inside the node, and the word in the label ("TLS 1.3 (security)"). Amber is never the only cue.
+- **Groups** (VLAN, VPC, host): dashed 1px border rectangle, radius none, with the group name top left in small text-secondary.
+- **Responsive:** each diagram has a horizontal layout for md+ and a vertical one below md. Labels never render below 14px, and there is no sideways scroll at 320.
+- **Text alternative:** each diagram is a `<figure>` containing:
+  1. an `<svg role="img" aria-labelledby="t d">` with `<title id="t">` (name) and `<desc id="d">` (one-sentence summary);
+  2. a visible description in small text-secondary under it (one or two sentences on what the diagram shows, not a caption about the image);
+  3. `<details><summary>Text version of the <name> diagram</summary>` with an ordered list of the same flow, one step per edge, security steps marked "(security)".
+
+### Expandable panel (Security work, Systems)
+- A native `<details>` / `<summary>`. The summary row is 56px minimum tall, full width, 1px hairline top border, with the item title (subtitle type), a one-line meta (small, text-muted: type, date, platform) and a 16px chevron on the right that rotates 180° when open.
+- **Open:** the body sits on surface-2, radius sm, 24px padding. Content: summary, approach, tools, takeaway, and a link to the full write-up named by its title.
+- **Hover:** the title gets an underline. Focus: the ring wraps the whole summary row.
+- Panels inside a list are independent. Opening one does not close others.
+
+### Code panel (Code layer only)
+- surface-2, 1px border, radius md. **Header row:** the real source path (`components/ProjectRow.tsx:12–24`) in mono-annotation text-muted, and a "Copy code" button (label type, 32px tall plus padding for a 44px target).
+- **Body:** mono-code, 16px padding, `pre-wrap` with a 2ch hanging indent. Line numbers in text-muted are `aria-hidden` and not copied. At most 12 lines; longer snippets are trimmed at a meaningful boundary with "Lines 12–24 of 88" shown.
+- **Highlighting,** within the two-signal palette: keywords and JSX tags in design-accent, strings in text, comments in text-muted, security-relevant tokens (header names, `nonce`, `integrity`) in security-accent. Everything else in text.
+- **Content is real:** snippets are read from the source files at build time, never retyped.
+
+### Terminal
+- **Opening:** opens with the backquote key **`** when focus is not in a text field, `contenteditable` or the terminal itself, and no modifier is held. It also opens from the visible "Open terminal" button in the footer. Ctrl+K is deliberately not used, because it's taken by browser search in Chrome and Edge on Windows.
+- **Shortcut setting:** single-character shortcuts can be turned off (WCAG 2.1.4), via the footer button "Keyboard shortcut: on". It is a toggle with `aria-pressed`, saved in `localStorage`, and documented on `/accessibility`.
+- **Container:** a native `<dialog>` opened with `showModal()`. Width `min(720px, 100% − 32px)`, max height 70svh, anchored to the bottom center (bottom sheet below md), surface-1, border-strong, radius md, overlay shadow.
+- **Title bar:** "Terminal" (label type, sans) plus a 44×44 Close button. No traffic-light dots.
+- **Body:** mono-terminal. The output is a `<div role="log" aria-live="polite">` that announces only new output. On open it prints "Type help to see commands. Press Escape to close."
+- **Input row:** a prompt `boaz@portfolio:~$` in design-accent (`aria-hidden`), then an `<input>` with `<label>` "Terminal command" (visually hidden), `autocomplete="off"`, `spellcheck="false"`. The caret is themed to design-accent.
+- **Commands:** `help`, `whoami`, `projects`, `skills`, `contact`, `clear`, `theme`. Unknown input prints: "Command not found: x. Type help to see commands." Output links are real `<a>` elements. Arrow up/down cycles history.
+- **Closing:** Escape closes it, as do the Close button and backdrop click. Focus returns to whatever opened it (the footer button, or the element that was focused when the shortcut fired).
+
+### Footer
+- A hairline top border, 64px top / 48px bottom padding. In small type, text-secondary:
+  1. the name and a one-line summary;
+  2. `<nav aria-label="Footer">` with Accessibility statement (`/accessibility`) on every page, plus Contact, GitHub, LinkedIn;
+  3. the "Open terminal" button and the "Keyboard shortcut: on/off" toggle;
+  4. "Last updated" with a `<time>`.
+- All links are underlined. External links name their destination ("GitHub profile", "LinkedIn profile") and get no icon.
+
+### Contact
+- The email is plain text inside a `mailto:` link, with a "Copy email" button that confirms in an `aria-live` region ("Email copied"). The profiles are GitHub, LinkedIn, TryHackMe and HackTheBox. The PGP key is optional: a fingerprint in grouped 4-character blocks (sans, tabular) with a link to the `.asc` file.
+- If a form is ever added, it follows Accessibility, Forms below.
+
+### Accessibility statement page (`/accessibility`)
+- **Read mode:** one column (columns 1–8 at lg). `h1` "Accessibility statement", then `h2` sections in this order:
+  - Standard (WCAG 2.2 AA / IS 5568)
+  - What we made accessible
+  - Keyboard shortcuts (the terminal shortcut and how to turn it off)
+  - Known limitations
+  - Tested with (a table of assistive technology × browser × date)
+  - Accessibility coordinator (a `<dl>` of name, email and phone, all from `content/site.ts`)
+  - Report a problem (what to include, expected response time)
+  - Last updated (`<time>`).
+- Same tokens, no Inspect margin columns needed. Inspect still works on this page.
+
+## Inspect overlay spec
+
+General rules for all three layers:
+- The film is one `<div aria-hidden="true">` positioned over `main`, `pointer-events: none`, rendered only while at least one layer is on. When off it doesn't exist in the DOM, so screen readers hear nothing.
+- Values come from `getComputedStyle` on the live elements, mapped back to token names through a build-time token map, for example `space-8 · 32px`, `headline · 36/41 · 600`. If a computed value has no matching token, the plate says so ("32px · no token") rather than hiding the mismatch.
+- The film redraws on resize and theme change (debounced 150ms) and covers the full page height. Elements outside the viewport are drawn in their final state.
+- Everything the film shows is also listed in the **Inspect legend** (below).
+
+### Design layer (blueprint blue, solid lines)
+- **Grid:** the 12 real columns as design-tint bands across `main`'s full height. Column edges are 1px dashed (2 4) design-accent, so they pass the 3:1 graphics requirement without a solid fill. At the top of the viewport, a plate reads `12 col · gutter 24px · margin 48px` with the live values.
+- **Component outlines:** 1px solid design-accent rectangles on component roots (header, nav, hero, section, project row, panel, footer). Each outline's top-left corner has a 5px square node. A leader runs to a plate with the component's role and size: `ProjectRow · 760×184`.
+- **Spacing:** dimension lines drawn in the actual gaps (section padding, heading margins, row gaps): 1px design-accent with 7px 45° slash ticks at both ends. The plate sits inside the gap when the gap is ≥ 24px. Smaller gaps get a leader out to the margin columns.
+- **Type:** each heading level and the body paragraph gets one plate in the margin, connected by an elbow leader to the text's baseline start: `h2 · headline · 36/41 · 600 · −0.02em`.
+- **Plates:** design-accent fill, on-accent text, mono-annotation, `2px 6px`, radius none, `min-height` (not height) so text spacing can expand them.
+
+### Code layer (blueprint blue, dashed lines)
+- **Outlines:** 1px dashed (4 2) design-accent on the same component roots. Dashed versus solid tells it apart from the Design layer when both are on.
+- **Name tags:** at each outline's top-left, outside the box: a code-name-tag plate (surface-3 fill, 1px design-accent border, design-accent text): `<ProjectRow>`, `<InspectControl>`.
+- **Snippets:** one code panel per section, placed in the margin (columns 9–12) next to the section's `h2`. It shows the real source of that section's main component. At most one snippet per section, so the margin never fills up.
+
+### System layer (amber for security, neutral for infrastructure)
+- The System layer doesn't attach to page elements. It opens a **System sheet**: a level-3 non-modal panel docked to the right (columns 8–12 at lg, a bottom sheet below lg), `<aside aria-labelledby>` "How this site is served".
+- **Contents:**
+  1. **Request flow:** the content diagram style showing visitor → DNS → CDN edge (TLS 1.3 termination: security) → static host → response. Security steps are amber with a shield.
+  2. **Response headers:** read live from `fetch(location.href, { method: "HEAD" })`. It's a definition list of header name (mono-annotation, text) and value (mono-annotation, text-secondary, wrapping), with a status per header: "Present" with a check icon, or "Missing" with a cross icon and amber text. Headers covered: `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, frame protection.
+  3. **TLS/CDN facts:** protocol, CDN provider and cache status. They are read from response headers where available. Unknown values show "Not exposed to the browser", never a guess.
+- In local development the sheet says "Development server: production headers differ" with a link to the header config, so it never presents development values as production.
+
+### Mobile and narrow widths (< 1024px, including 200% zoom)
+- There are no margin columns, so labels never sit on the canvas. The film draws only the lines, outlines and dashed grid edges, plus **markers**: 20×20 square design-accent plates with an index number, placed in the spacing above an outline's top-left corner. They never overlap text.
+- All labels, values and snippets move into the **Inspect legend**, docked at the bottom. It's a level-3 sheet, 48px tall when collapsed ("Inspect values · 14 items", with an expand button), up to 45svh when expanded, scrolling internally. Entries are numbered to match the markers.
+- While the legend is open, `main` gets bottom padding equal to its height, so no content becomes unreachable.
+
+### Inspect legend (all widths)
+- It's the accessible, readable form of the film: an `<aside aria-label="Inspect values">` with one `h2` per active layer and a list (`<ol>`) of entries: element, property, token and value. Code entries contain their code panel.
+- It is always available. At lg it opens from "Show values as list"; below lg it is the default label surface.
+
+## Motion
+
+Calm everywhere, with **one authored moment: the film drawing itself in.** Nothing on the page animates because the page scrolled.
+
+### Tokens
+
+| Token | Value | Use |
+|---|---|---|
+| `dur-instant` | 0ms | Theme swap, filter results, skip link, everything under reduced motion |
+| `dur-fast` | 120ms | Hover/press color, underline draw, plate reveal |
+| `dur-base` | 200ms | Chevron rotate, menu panel, terminal open |
+| `dur-slow` | 320ms | System sheet reveal |
+| `dur-draw` | 480ms | One outline trace in the film |
+| `ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | Entrances and state changes |
+| `ease-plot` | `cubic-bezier(0.45, 0, 0.15, 1)` | Line drawing (a pen that starts deliberately and settles) |
+| `ease-in` | `cubic-bezier(0.4, 0, 1, 1)` | Exits |
+
+### The draw-in (signature)
+Total budget: ≤ 1000ms from press to fully drawn. Only elements in the viewport animate; everything else appears already drawn.
+
+**Design layer:**
+1. **0ms, grid.** Column edges extend downward from the top of the viewport (`scaleY 0 → 1`, origin top, 400ms ease-plot), staggered 16ms per column from 1 to 12, a left-to-right sweep. Bands fade in under them (0 → 1, 200ms).
+2. **120ms, outlines.** Each outline traces from its top-left node clockwise (SVG `stroke-dashoffset`, 480ms ease-plot), staggered 40ms in reading order. At most 8 stagger steps; the rest start with the 8th.
+3. **360ms, dimensions.** Each dimension line grows from its first tick to its second (240ms ease-plot); the second tick appears when the line arrives.
+4. **On arrival, plates.** Each plate opens left to right as its line finishes (`clip-path: inset(0 100% 0 0) → inset(0)`, 120ms ease-out). Text appears whole: no typewriter effect, no scrambled characters.
+
+**Code layer:** dashed outlines trace (360ms ease-plot, 40ms stagger). Name tags clip-reveal from their corner (120ms). Margin snippets reveal top to bottom (`clip-path`, 280ms ease-out), the code fully visible at once inside the reveal. Total ≤ 700ms.
+
+**System layer:** the sheet reveals from the Inspect control's side (`clip-path`, 320ms ease-out). Diagram nodes appear in request order (opacity 120ms each, 90ms apart), each edge drawing toward the next node (200ms ease-plot). When the path is complete, one 6px square **packet** travels it once from visitor to host and back (1200ms ease-in-out), then disappears. It plays once per open; there's no loop and no blinking. The header list appears with the sheet, not row by row.
+
+**Turning a layer off:** the film fades out (opacity 1 → 0, 140ms ease-in). It is never reverse-drawn.
+**Switching layers:** the outgoing layer clears while the incoming one draws. They don't wait for each other.
+
+### Everything else
+- **Hover/press:** color, fill and border changes at 120ms ease-out. Underlines draw left to right (`background-size` on a 1px underline, 120ms). Buttons darken one surface step on press. No lift, scale, tilt or glow.
+- **Expandable panel:** the chevron rotates 200ms. The body opens with `interpolate-size: allow-keywords` height animation at 200ms where supported, and instantly elsewhere.
+- **Menu panel / terminal:** opacity 0 → 1 with `translateY(8px → 0)`, 200ms ease-out. Closing is opacity only, 140ms ease-in.
+- **Theme change, filters, skip link:** instant.
+- **Nothing flashes.** No element changes luminance more than once per second, so the 3-per-second flash threshold is never approached.
+
+### Reduced motion (`prefers-reduced-motion: reduce`)
+Every animation has a reduced form, and every reduced form is the instant end state. Nothing stays hidden.
+
+| Animation | Reduced version |
+|---|---|
+| Design draw-in (grid, outlines, dimensions, plates) | Film appears fully drawn at once |
+| Code draw-in (dashes, tags, snippets) | Appears fully drawn at once |
+| System sheet reveal and diagram build | Sheet and full diagram appear at once |
+| Packet trace | Not played. A static route highlight shows the path. |
+| Layer off / switch | Instant |
+| Hover underline draw | Underline present at once on hover/focus |
+| Hover color/fill/border | Instant |
+| Chevron rotate / panel height | Instant |
+| Menu panel / terminal open and close | Instant |
+| Smooth scrolling to anchors | `scroll-behavior: auto` |
+
+## Accessibility
+
+Target: WCAG 2.2 AA, which also satisfies IS 5568. Where accessibility and appearance conflict, accessibility wins and this file is changed to match.
+
+### Focus
+- **Ring:** `outline: 2px solid var(--focus-ring); outline-offset: 2px` on `:focus-visible` for every interactive element. Dark `#9cc4fa` (≥8.04:1 on all surfaces) / light `#1c5ac2` (≥5.09:1). The ring is never removed or replaced by color change alone. Inside the dialog and sheets, the offset gap is that surface's color.
+- **On accent fills:** the skip link is the only focusable element with a blue fill, so its ring uses the `text` color instead (15.33:1 dark / 16.45:1 light against the page behind it) so it doesn't merge with the fill. Inspect plates are never focusable.
+- **Never hidden:** `scroll-padding-top` keeps focused elements clear of the sticky header (WCAG 2.4.11). Sheets and the legend pad `main` so they never cover focused content.
+- **Forced colors:** the ring uses `Highlight`.
+
+### Targets
+- Minimum 24×24px for every target (WCAG 2.5.8). The design standard is 44×44px for nav links, toggles, filters, Inspect segments, the theme toggle, terminal controls, copy buttons and summary rows (56px tall).
+- Inline links in running text are exempt by spec but sit on a 1.6 line height with a 6px underline offset.
+
+### Announcements by component
+
+| Component | Element / role | Accessible name | State / announcement |
+|---|---|---|---|
+| Skip link | `a` | "Skip to main content" | Moves focus to `main` |
+| Primary nav | `nav` | "Primary" | `aria-current="page"` or `"true"` on the current link |
+| Menu button (< md) | `button` | "Menu" | `aria-expanded`, `aria-controls` the panel |
+| Theme toggle | `button` | "Dark theme" | `aria-pressed` true = dark |
+| Inspect group | `div role="group"` | "Inspect" (`aria-labelledby` visible label) | n/a |
+| Inspect segment | `button` | "Design layer" / "Code layer" / "System layer" | `aria-pressed`. On change, the polite status region says "Design layer on, 14 values listed" |
+| Show values as list | `button` | "Show Inspect values as a list" | `aria-expanded`, `aria-controls` legend |
+| Inspect film | `div` | n/a | `aria-hidden="true"` (removed from DOM when off) |
+| Inspect legend | `aside` | "Inspect values" | Headings per layer, `ol` of entries |
+| System sheet | `aside` | "How this site is served" | Header statuses as text ("Present" / "Missing") |
+| Tag filter | `div role="group"` | "Filter projects by discipline" | Each `button` has `aria-pressed`; result count in `aria-live="polite"` |
+| Project row | `article` | Title link text = project name | Tags as `ul aria-label="Tags"` |
+| Expandable panel | `details` / `summary` | Summary text | Native expanded/collapsed |
+| Diagram | `figure` > `svg role="img"` | `<title>` + `<desc>` | Text version in `details` |
+| Code panel | `figure` | `figcaption` = file path | "Copy code" button announces "Code copied" (polite) |
+| Terminal | `dialog` (modal) | "Terminal" (`aria-labelledby` title) | Output `role="log" aria-live="polite"`; input labeled "Terminal command" |
+| Terminal opener | `button` | "Open terminal" | Returns focus here on close |
+| Shortcut toggle | `button` | "Keyboard shortcut for terminal" | `aria-pressed` |
+| Copy email | `button` | "Copy email address" | "Email copied" (polite) |
+| Case study pager | `nav` | "Case studies" | Links named "Previous case study: X" |
+
+### Structure
+- `<html lang="en">`. One `h1` per page, with no skipped heading levels. Landmarks: `header`, `nav` (labeled when more than one), `main`, `footer`; sheets as labeled `aside`.
+- Each page has a unique title: "Boaz King: Designs, builds and secures digital products" (home), "*Project name*: case study · Boaz King", "Accessibility statement · Boaz King".
+- Native elements first (`button`, `a`, `details`, `dialog`). ARIA is added only where native semantics don't exist (the group labels, the live regions).
+- Links describe their destination. There is no "read more"; write-up links use the write-up title.
+
+### Color is never the only signal
+- Tags have an icon and a word. Pressed toggles have a filled square and `aria-pressed`. Security items carry a shield icon plus the word "Security". Header status shows a check/cross icon plus "Present"/"Missing". Diagram line meaning is solid versus dashed plus a legend. Links are underlined. Code-layer outlines are dashed versus solid in the Design layer.
+
+### Media
+- Informative images have alt text that describes what they show. Decorative images use `alt=""`. Placeholder frames carry their visible "Placeholder" text.
+- Video, if any, has captions, never autoplays with sound, and has visible controls.
+
+### Forms (if a contact form is added)
+- Visible `<label>` above each field. Errors appear below the field in text with an icon, are tied by `aria-describedby`, and say how to fix it ("Enter an email address like name@example.com"). The form is checked on submit, not on each keypress. No CAPTCHA puzzles. Inputs are 44px tall with a border-strong edge, radius sm and a 16px font (prevents iOS zoom).
+
+### Named Rules
+**The List Twin Rule.** Anything drawn (film annotations, diagrams, the request flow) has a readable list twin a keyboard or screen reader user can reach. A picture with no list version doesn't ship.
+
+**The No Overlay Plugin Rule.** No accessibility overlay or widget is installed. The site is built accessible.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** use only the role tokens in this file. Any new color is computed against every surface and added to the contrast table before use.
+- **Do** keep running text in columns 1–8 at lg+, and keep the margin free for the film.
+- **Do** generate every Inspect value from the live page and source. A plate that doesn't match the page is a bug.
+- **Do** mark every placeholder visibly ("Placeholder: …"), with content in `content/site.ts`.
+- **Do** give every drawn thing a text twin (List Twin Rule).
+- **Do** theme the browser surfaces: `::selection` (design-tint at 35% with text color), caret, `accent-color`, scrollbar colors (`scrollbar-color: border-strong bg`), underline offset.
+
+### Don't:
+- **Don't** use the neon-green "hacker" look: green-on-black, matrix rain, glitch text.
+- **Don't** use purple or violet anywhere, including gradients, tints or hover states.
+- **Don't** add glow: no colored halos, `box-shadow` without offset, glowing borders or neon text shadows.
+- **Don't** use mesh gradients, gradient text or any decorative gradient.
+- **Don't** use stock photos. Use real screenshots or a hatched placeholder frame.
+- **Don't** add shader, WebGL, canvas-noise or animated backgrounds.
+- **Don't** use all-caps text, including eyebrow labels above headings. There are no eyebrows at all.
+- **Don't** use mono outside Inspect, the legend and the terminal.
+- **Don't** use emoji, in content or as icons.
+- **Don't** append arrows (→, ↗, ›) to links. Only diagram edges have arrowheads.
+- **Don't** convey meaning with color alone.
+- **Don't** use fully rounded buttons, pills or circular icon buttons.
+- **Don't** build grids of same-size icon + heading + text cards, nest cards, or put side stripes (a colored bar down one edge) on any box.
+- **Don't** fade sections up on scroll, add parallax or scroll-jack. The draw-in is the only authored motion.
+- **Don't** number sections. The one exception is How I work (research → design → build → secure → test), where order is the content.
+- **Don't** use logo walls in the Toolbox. Tools are grouped text lists.
+- **Don't** let the brand show through Linear's or Vercel's clothes: no lavender accent, black pill CTAs, Geist, mesh hero or near-black `#010102` ground.
