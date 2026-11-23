@@ -568,6 +568,62 @@ Each subject is its own world inside one system. **Never changes between themes:
 
 **How flavor and direction combine.** The exit is always the directional slide (old content leaves along the grid axis in nav order, 240ms), so pages still feel like neighbours on one sheet. The destination theme decides the enter. The project morph (`morph`, `morph-back`) overrides both, whatever the themes.
 
+### The network: Descend the stack
+
+The Systems theme's signature is a descent through six levels of the stack, each its own route. Theme: The network (steel accent, signal green for "Up" only, topology motif in the outer margins).
+
+**Routes and order.** `/systems` (overview, depth 0) → `internet` (1) → `edge` (2) → `network` (3) → `host` (4) → `containers` (5) → `os` (6), all under `/systems/`. In nav order they all count as Systems; between themselves, depth decides the transition.
+
+**Level page layout (lg and up).** Level pages use a wide layout and are the one place the Inspect margin is given up:
+- Columns 1–2: the **depth gauge**, sticky under the header (`top: header + 24px`). A 1px vertical rule in border-strong with 6 square ticks (10px), each a link with its level name (small type) beside it; the current tick is filled with the accent and marked with a "You are here" text label for screen readers via `aria-current="page"`. The overview (depth 0) is a link above the ticks ("Overview").
+- Columns 3–8: the level `h1` (page-title), a one-line description, the **diagram**, then "Work at this level", then the three info blocks.
+- Columns 9–12: the **node details panel**, sticky beside the diagram.
+- With Inspect on, labels on level pages go to the legend (as below lg), since columns 9–12 hold the details panel.
+
+**Below lg.** The gauge becomes a compact bar directly under the header (48px, sticky): "Level 3 of 6 · Network" plus six 24px tick links in a row. The diagram becomes a vertical stack of nodes (one column of full-width node buttons with their links drawn as short vertical connectors). The details panel follows the diagram in the flow.
+
+**Diagram.** Inline SVG plus real `<button>` elements positioned over the nodes (the SVG draws links and frames; the buttons are the nodes, so focus, names and states are native).
+- Node button: surface-1, 1px border-strong, radius xs, 44px min height, label (subtitle) and role (small, text-secondary). States, each with text and an icon:
+  - **Selected:** `aria-pressed="true"`, accent border 2px, filled square icon.
+  - **Way down:** accent dashed border, chevron-down icon, visible label "Go deeper: <next level>". Selecting it navigates (it is a link, not a toggle).
+  - **Healthy:** check icon and the word "Up" in signal green.
+  - **Has related work:** a briefcase icon and the text "Has related work" (small).
+- Hover or focus on a node highlights its links (accent, 1.5px → 2px) and dims unrelated links to border color.
+- Selecting a node fills the **details panel**: `<section role="region" aria-labelledby>` titled with the node name; role, specs, ports, config notes, and related work items. Focus moves to the panel heading (`tabindex="-1"`); Escape returns focus to the node button.
+- **Text alternative:** under each diagram, `<details>` "Text version of the <level> diagram": every node with the same details as the panel, then every connection ("Router to Firewall: trunk, VLAN 10/20").
+
+**Work at this level.** Between the diagram and the info blocks, `h2` "Work at this level".
+- **Featured** (`primaryLevel` is this level): a large row (title in title type, one-line outcome, tags, period). A project links to its case study with the project morph (shared names as in Project row). An experience entry is a native `<details>`: summary shows role, organisation and period; open shows the summary, "What I did" (list) and tools.
+- **Also at this level:** a compact `<ul>`, each item with an `h3` (title), period and tags. Projects link; experience items are `<details>`.
+- No work at a level: the whole section is omitted (no empty state), and `next build` logs `[stack] No work at level: <level>`.
+
+**Info blocks.** Three blocks in a row at md+ (stacked below): "What lives here", "How I secure it" (shield icon, amber accent border on the block, "Security" in text), "Tools I use" (plain list).
+
+**Bottom controls.** "Go up: <parent>" and "Go deeper: <next>" as two buttons (link styled as secondary buttons, 44px) at the end of each level. The OS level ends with "Back to surface" (to `/systems`, zoom-out) and the link "See how I attack and defend this stack" (to `/security`).
+
+**Keyboard shortcuts.** ArrowDown / PageDown go deeper along the way-down node; ArrowUp / PageUp go up a level. They are active only while focus is inside the stack UI (the gauge, the diagram, the details panel, the bottom controls) and never in an input, textarea, select or contenteditable. Everywhere else the keys keep their normal job of scrolling the page, so keyboard users can still read long levels. A hint line under the diagram says so ("With focus in the diagram: ↓ deeper, ↑ up"), and the accessibility page documents it. Using these keys this way is an accessibility decision: hijacking arrow and Page keys page-wide would take scrolling away from keyboard users.
+
+**Case study stack strip.** Under the case study meta: `nav aria-label="Stack depth"` with the levels the project touches as small linked ticks (square + level name), in depth order. Following one uses the zoom-in transition.
+
+**Trace a request** (on `/systems/internet`). A toggle button (`aria-pressed`) "Trace a request" reveals a vertical schematic of all six levels on this page (no route changes). A 6px square packet steps from the browser down through each level, pausing at each with one line (DNS lookup, TLS handshake, firewall check, reverse proxy, container, process), and "I worked here: <title>" with a link when that level has a featured item.
+- Advances every 3.5s. Visible controls: Pause / Play, Previous step, Next step (44px). Pauses on hover and while focus is inside the trace. The current step is announced in a polite live region ("Step 3 of 6: firewall check").
+- The packet moves with `transform: translateY` (240ms ease-out per step).
+- Reduced motion: no auto-advance and no packet movement; an ordered list of the six steps with the current one marked, and Previous / Next.
+
+**Zoom transition** (types `zoom-in`, `zoom-out`, `zoom-jump`)
+
+| Element | Role | Starts | Duration | Motion | Relationship |
+|---|---|---|---|---|---|
+| Way-down node → next level's diagram frame (`level-frame-<next>`) | Lead | 0ms | 450ms | Grows from the node's box to the frame's box, ease-out; old snapshot fades out over 180ms, new fades in from 120ms to 360ms | — |
+| Old level content | Support | 0ms | 300ms | `scale(1 → 0.96)`, opacity 1 → 0: falls away behind | Together |
+| New level content | Support | 150ms | 300ms | Opacity 0 → 1 | Overlaps: arrives as the frame lands |
+| Gauge current tick | Support | 0ms | 300ms | The highlighted tick slides to the new level (`view-transition-name: depth-tick`) | Together |
+| Header, gauge rule | Static | — | — | — | — |
+
+- `zoom-out` is the exact reverse: the current diagram frame shrinks back into its node on the parent level, the old content fades, the parent rises from `scale(1.04 → 1)`.
+- `zoom-jump` (two or more levels, via the gauge or a case study strip): no shared element; old content `scale(1 → 1.06)` and fades over 200ms (deeper) or `scale(1 → 0.94)` (up), new content from the opposite scale to 1 over 300ms. One continuous move, never level by level.
+- Reduced motion: an instant swap with a 120ms crossfade only.
+
 ### Theme contrast table
 
 WCAG 2.x contrast of each accent against every surface. Requirements: text 4.5:1, UI and graphics 3:1. Every accent passes as text on every surface in both themes.
@@ -650,6 +706,9 @@ The navigation type decides the animation:
 | `nav-back` | Target is to the left in nav order | Content slides right |
 | `morph` | A project row, a featured project, or Previous / Next opens a case study | Row morphs into the header |
 | `morph-back` | A case study goes back to the list or Home | Header morphs back into the row |
+| `zoom-in` / `zoom-out` / `zoom-jump` | Moving between Systems stack levels, or from a case study's stack strip to a level | See Descend the stack |
+
+Types are attached with `<Link transitionTypes>` (Next 16.4 passes them to `React.addTransitionType`). Every navigation also carries `to-<theme>` so the destination theme can choose the enter animation; React joins the classes of all matching types. Back and Forward (popstate) carry no types, so a popstate listener computes the same type from the previous and next URL and sets `html[data-nav]` and `html[data-enter]` before React captures the transition; the CSS covers both selectors.
 
 Back and Forward buttons get their type from the same nav-order comparison, so the motion always matches the direction of travel.
 
@@ -732,6 +791,9 @@ Every animation has a reduced form, and every reduced form is the instant end st
 | Project morph and its reverse | Instant page swap |
 | Nav indicator slide | Moves instantly |
 | Theme crossfade | Instant |
+| Stack zoom in / out / jump | Instant swap with a 120ms crossfade |
+| Trace a request | No auto-advance, no packet movement: a stepped list with Previous / Next |
+| Systems packet on the diagram | Removed |
 
 ## Accessibility
 

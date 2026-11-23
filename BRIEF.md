@@ -40,7 +40,8 @@ Real routes, not one long page. Each page has its own `<title>`, one `<h1>` and 
 | `/work` | All projects (4–6), tagged Design / Development / Systems / Security, with filters |
 | `/work/[slug]` | Case study, one per project in `content/site.ts`: problem → design decisions → how it's built → system architecture diagram → security (threat model, protections, testing) → outcome with numbers. Ends with Previous / Next project. |
 | `/security` | Security work: CTFs, lab write-ups, research, certs. Expandable summaries. |
-| `/systems` | Systems & infrastructure: homelab, servers, networking, Linux, cloud, Docker, shown as clean diagrams |
+| `/systems` | Systems & infrastructure overview: the whole stack as a vertical depth gauge with an "Enter" button (see Descend the stack) |
+| `/systems/internet`, `/systems/edge`, `/systems/network`, `/systems/host`, `/systems/containers`, `/systems/os` | The six stack levels, one route each |
 | `/about` | About (short bio, photo, certifications, what I'm looking for), How I work (research → design → build → secure → test, a real sequence, so numbering is OK here), Toolbox (grouped by area, no logo walls) |
 | `/contact` | Email as plain text, GitHub, LinkedIn, TryHackMe/HackTheBox, optional PGP key |
 | `/accessibility` | Accessibility statement, linked from the footer on every page |
@@ -64,6 +65,58 @@ Rules for all themes:
 - Themes apply through CSS custom properties scoped by a `data-section` attribute, so a page transition can crossfade the accent from one theme to the next. When moving between sections, the accent shifts during the transition.
 - Case studies take the theme of their primary tag.
 - No theme may break the don't list (no neon-green hacker look, no glow, no gradients, no stock photos, no shader effects).
+
+## Descend the stack (Systems)
+
+The visitor zooms from the internet down to the OS, one level at a time. Each level is its own route, so it is linkable and Back works.
+
+| Route | Level |
+|---|---|
+| `/systems` | Overview: the whole stack as a vertical "depth gauge", with an "Enter" button at the top |
+| `/systems/internet` | 1 Internet: DNS, domain, registrar, global routing. The request starts here. |
+| `/systems/edge` | 2 Edge: CDN, TLS termination, WAF, DDoS protection, security headers |
+| `/systems/network` | 3 Network: router, firewall rules, VLANs/segments, VPN, reverse proxy |
+| `/systems/host` | 4 Host: physical/virtual servers, hypervisor, hardware specs |
+| `/systems/containers` | 5 Containers & services: Docker/compose stacks, what runs where, ports |
+| `/systems/os` | 6 OS: kernel, users & permissions, services/daemons, hardening, logs |
+
+Each level shows:
+- An interactive SVG diagram. Every node is a focusable button; selecting a node shows its details in a side panel (role, specs, ports, config notes).
+- One node per level is the "way down" (highlighted, labeled "Go deeper: <next level>"). Selecting it zooms into the next level.
+- "Work at this level" (between the diagram and the info blocks): the featured item whose `primaryLevel` is this level, shown large (title, one-line outcome, tags, period). A project links to its case study with the project morph; an experience entry expands in place (disclosure). Other items that touch this level are listed below as "Also at this level". Items with a `nodeId` are highlighted on that node ("has related work", in text) and listed in the side panel when the node is selected. A level with no work hides the section entirely, and the build logs a warning naming the level.
+- Three short blocks: "What lives here", "How I secure it" (amber), "Tools I use".
+- All content comes from `content/site.ts` (a `systemsLevels` array), with placeholders based on a typical homelab.
+
+Content model additions:
+- Projects and work-experience entries get `stackLevels` (one or more of internet | edge | network | host | containers | os) and `primaryLevel` (where the item is featured), and optionally `nodeId`.
+- Work experience: `{ id, role, organisation, period, summary, whatIDid[], tools[], stackLevels, primaryLevel, nodeId?, link? }`. No case study page.
+- Placeholders: one placeholder project or experience at every level, clearly marked "[PLACEHOLDER]".
+
+Zoom transition:
+- Going deeper: the selected node scales up and becomes the frame of the next level's diagram (shared view-transition-name). The old level falls away behind it. About 450ms.
+- Going up: the exact reverse; the current diagram shrinks back into its node on the parent level.
+- Jumping several levels via the gauge: one quick continuous zoom, not each level played in turn.
+- From a case study to a level: the zoom transition.
+- Reduced motion: instant swap with a brief crossfade only.
+
+Navigation aids:
+- A fixed depth gauge, on the left on desktop and as a compact top bar on mobile: 6 ticks, the current level highlighted, each tick a link. It works like breadcrumbs: `nav aria-label="Stack depth"`, `aria-current="page"` on the current level.
+- Keyboard: ArrowDown/PageDown go deeper along the "way down" node; ArrowUp/PageUp go up a level. Only active when focus isn't in an input. Shown in a small hint and on the accessibility page.
+- "Go up" and "Go deeper" buttons at the bottom of each level.
+- The OS level ends with "Back to surface" (zooms all the way out) and a link to the Security page: "See how I attack and defend this stack."
+- Case study pages show a small "Stack depth" strip with the levels the project touches, each linking to that level.
+
+"Trace a request" (signature moment), on `/systems/internet`:
+- A toggle, "Trace a request". A single packet travels from the browser down through every level to the OS process that serves it, pausing at each level with one line on what happens there (DNS lookup, TLS handshake, firewall check, reverse proxy, container, process). If the level has a featured work item, the pause also shows "I worked here: <title>" with a link.
+- It advances by itself every few seconds, with visible Pause, Next and Previous controls (WCAG 2.2.2). Reduced motion: no animation, a stepped list with Next and Previous.
+
+Accessibility:
+- Each level has its own `<h1>`, title and focus-on-arrival like every other page.
+- Every diagram has a text alternative: an expandable list of its nodes and connections with the same details as the side panel.
+- The side panel is a labeled region. Selecting a node moves focus to it, and Escape returns focus to the node.
+- Node states (selected, way down, healthy, has related work) use text and an icon, never color alone.
+- Work items are a real list (`<ul>`), each with a heading. Experience disclosures use native `<details>/<summary>` (or a button with `aria-expanded` and `aria-controls`).
+- Mobile: diagrams simplify to a vertical stack of nodes; the depth gauge becomes a compact top bar.
 
 ## Connected transitions
 
