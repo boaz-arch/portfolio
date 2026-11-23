@@ -509,7 +509,7 @@ One global **site terminal** on every page, mounted in the root layout. The Secu
 - Also opens from the always-visible "Open terminal" button in the footer.
 - The shortcut can be turned off with the footer toggle "Keyboard shortcut for terminal" (`aria-pressed`, saved in `localStorage`) (WCAG 2.1.4).
 - Closes with Escape, the Close button, a backdrop click, or `exit` (outside challenge mode). Focus returns to whatever opened it.
-- **Open state persists in the tab:** `sessionStorage` remembers whether it was open. If a navigation that the terminal did not start (Back/Forward, a reload) happens while it is open, it reopens on the new page with focus in the input; the page title is still announced. Commands that navigate close it first (below).
+- **Open state:** restored only after navigations the terminal itself started (`cd`, `open`, `systems`, `sudo hire boaz`). On reload, Back/Forward or a normal link click it starts closed. The flag is a one-shot value in memory, set by the command and consumed on the next page; nothing about the open state is stored.
 
 **Container:** native `<dialog>` opened with `showModal()`, `aria-labelledby` its title "Site terminal". Width `min(720px, 100% − 32px)`, max height 70svh, anchored bottom center (a bottom sheet below md), surface-1, border-strong, radius md, overlay shadow. Title bar: "Site terminal" (label type, sans), the current mode in small text-muted ("Site" / "Challenge: guest@target" / "Challenge: boaz@ops"), and a 44×44 Close button. No traffic-light dots.
 
@@ -538,7 +538,7 @@ One global **site terminal** on every page, mounted in the root layout. The Secu
 | Site | `history`, `clear`, `exit` | History list; clears output; closes the terminal (in challenge mode, `exit` leaves the mode and keeps progress) | — |
 | Fun | `sudo hire boaz` | "Permission granted. Opening a secure channel…" then navigates to `/contact` | Nav: Contact |
 
-**Navigation from the terminal:** commands that navigate close the dialog first (no closing animation competes with the page transition), then call `router.push(href, { transitionTypes })` with the same types a link would use, then focus goes to the new page's `h1` as on every navigation.
+**Navigation from the terminal:** commands that navigate close the dialog first (no closing animation competes with the page transition), then call `router.push(href, { transitionTypes })` with the same types a link would use. When the new page has mounted, the terminal reopens with focus in its input and prints the new location ("Now at /security"); the page title is announced as on every navigation. The new page's `h1` is the focus target if the visitor closes the terminal right away, because the trigger it would return to no longer exists.
 
 **Challenge mode** (`ctf`): the prompt becomes `guest@target:~$`, then `boaz@ops:~$` after a successful `ssh`. In this mode `ls`, `cat`, `cd`, `pwd`, `whoami`, `help` and `exit` operate on the simulated machine (see The vault), plus `decode`, `ssh`, `sudo -l`, `sudo <cmd>`, `hint`, `progress`, `skip`. Site commands that don't clash (`theme`, `inspect`, `cv`, `contact`, `projects`, `open`, `systems`, `github`, `linkedin`, `history`, `clear`) keep working, so a player can switch on Inspect without leaving the mode. `decode` also works outside the mode.
 

@@ -253,8 +253,8 @@ Commands:
 Behavior:
 - Tab completion for commands, page names, project slugs and Systems levels. Up/Down for history (kept in `sessionStorage`).
 - Every link printed is a real, focusable `<a>`. External links use `rel="noopener noreferrer"`.
-- Commands that navigate close the terminal first, then run the page transition, then focus goes to the new page's `h1`.
-- The terminal remembers whether it was open across navigation in the same tab.
+- Commands that navigate (`cd`, `open`, `systems`, and `sudo hire boaz`) close the terminal first, then run the page transition, then reopen it on the new page so the visitor can keep typing; the new page's title is announced.
+- The open state is restored only after navigations the terminal itself started. On reload, Back/Forward or a normal link click, the terminal starts closed.
 - All data comes from `content/site.ts`, never duplicated.
 - First open shows one line: "Type 'help' to see commands, or 'ctf' to try breaking in."
 
